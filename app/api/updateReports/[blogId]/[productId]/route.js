@@ -122,11 +122,13 @@ export async function PUT(request) {
   }
 }
 
-export async function DELETE(request) {
+export async function DELETE(request,{ params }) {
   await connectToDatabase();
+  console.log(params)
   const { searchParams } = new URL(request.url);
-  const blogId = searchParams.get("blogId");
-  const productId = searchParams.get("productId");
+  console.log(searchParams);
+  const {blogId} = params
+  const {productId} = params;
  console.log(`Received blogId: ${blogId}, productId: ${productId}`);
   if (!blogId || !productId) {
     return new Response(

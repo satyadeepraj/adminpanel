@@ -49,8 +49,8 @@ const Reportable = () => {
   console.log(reports);
 
   const filteredReports = reports.filter((report) => {
-    const matchesEmail = report.blogId.email.toLowerCase()
-    const productStartDate = new Date(report.blogId.dateOfReport);
+    const matchesEmail = report?.blogId?.email.toLowerCase()
+    const productStartDate = new Date(report&&report?.blogId?.dateOfReport);
    
   
   const isExactDateRange =!startDate ||  productStartDate.toDateString() === startDate.toDateString()
