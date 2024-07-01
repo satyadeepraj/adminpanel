@@ -57,7 +57,7 @@ const SideBar = () => {
                   isLinkActive("/") && "text-gray-700"
                 }`}
               >
-                Admin Form
+               Home
               </p>
             </span>
           </Link>
@@ -90,7 +90,7 @@ const SideBar = () => {
         </Link>
       </div>
 
-      <div className="w-full flex justify-left ml-16">
+      {/* <div className="w-full flex justify-left ml-16">
         <Link
           href="/report-list"
           className={`hover:bg-white hover:rounded p-2 ${
@@ -113,7 +113,7 @@ const SideBar = () => {
             </p>
           </span>
         </Link>
-      </div>
+      </div> */}
 
       <div className="w-full flex justify-left ml-16">
         <Link
@@ -134,7 +134,7 @@ const SideBar = () => {
                 isLinkActive("/products") && "text-gray-700"
               }`}
             >
-              Add projects
+             Projects
             </p>
           </span>
         </Link>

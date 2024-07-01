@@ -3,13 +3,107 @@ import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
 import { useData } from "@/context/DataContext";
 import DeleteIcon from "../../public/DeleteIcon.gif";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { AddProduct } from "./add-product";
+import { AddBlog } from "./add-blog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import Link from "next/link";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Reportable = () => {
-  const { blogData } = useData();
   const router = useRouter();
+  const { productData } = useData();
+  const [reports, setReports] = useState([]);
+  const params = useParams();
+  const { id } = params;
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [startDate, setStartDate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 1;
+  console.log(productData && productData);
+
+  useEffect(() => {
+    if (productData && productData.length > 0) {
+      const product = productData.find((e) => e._id.toString() === id);
+      setReports(product && product.reports);
+    }
+    setCurrentPage(1);
+  }, [productData,startDate, searchQuery]);
+
+  console.log(reports);
+
+  const filteredReports = reports.filter((report) => {
+    const matchesEmail = report.blogId.email.toLowerCase()
+    const productStartDate = new Date(report.blogId.dateOfReport);
+   
+  
+  const isExactDateRange =!startDate ||  productStartDate.toDateString() === startDate.toDateString()
+    
+    const matchesSearchQuery =
+    ( matchesEmail &&  matchesEmail.includes(searchQuery.toLowerCase()))
+   
+   
+    return matchesSearchQuery && isExactDateRange ;
+  });
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentReports = filteredReports.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  const totalPages = Math.ceil(filteredReports.length / productsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDeleteProduct = async (productId, blogId) => {
+    // Implement your delete logic here
+    console.log(
+      `Delete blog with ID: ${blogId} from product with ID: ${productId}`
+    );
+
+    try {
+      await axios.delete(`/api/updateReports/${blogId}/${productId}`);
+      toast.success("Report deleted successfully!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      toast.error("Error publishing Report. Please try again.");
+      console.log(error);
+    }
+  };
+  const getSeverityBgColor = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-[#90EE90]"; /* LightGreen */
+      case "PendingForReview":
+        return "bg-yellow-500"; /* LightYellow */
+      case "PendingForApproval":
+        return "bg-[#8B0000]"; /* LightCoral */
+      case "Closed":
+        return "bg-green-500"; /* LightGray */
+      default:
+        return "";
+    }
+  };
   return (
     <div className=" min-h-screen w-full bg-[#F1F1F1]">
       <Header />
@@ -29,28 +123,43 @@ const Reportable = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-2 shrink-0 sm:flex-row">
+              <div className="w-full md:w-72">
+                <div className="relative h-10 w-full min-w-[200px]">
+                  <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center text-blue-gray-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 !pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                    placeholder=" "
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none !overflow-visible truncate text-[11px] font-normal leading-tight text-gray-500 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                    Search
+                  </label>
+                </div>
+              </div>
                 <button
                   className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
                 >
                   view all
                 </button>
-                <button
-                  className="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    stroke-width="2"
-                    className="w-4 h-4"
-                  >
-                    <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path>
-                  </svg>
-                  Add member
-                </button>
+                <AddBlog />
               </div>
             </div>
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -91,34 +200,20 @@ const Reportable = () => {
                   </ul>
                 </nav>
               </div>
-              <div className="w-full md:w-72">
-                <div className="relative h-10 w-full min-w-[200px]">
-                  <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center text-blue-gray-500">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <input
-                    className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 !pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                    placeholder=" "
+              <div className="">
+                <div className="px-2">
+                  <label></label>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    isClearable
+                    placeholderText="Date Of Report"
+                    className="border rounded p-2"
                   />
-                  <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none !overflow-visible truncate text-[11px] font-normal leading-tight text-gray-500 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                    Search
-                  </label>
                 </div>
+               
               </div>
+             
             </div>
           </div>
           <div className="p-6 px-0 overflow-scroll">
@@ -151,13 +246,11 @@ const Reportable = () => {
                 </tr>
               </thead>
               <tbody>
-                {!blogData ? (
-                  <div>No products available. Please add some.</div>
-                ) : (
-                  blogData.map((product) => (
+                {currentReports && currentReports.length > 0 ? (
+                  currentReports.map((product) => (
                     <tr
-                      key={product._id}
-                      id={product._id}
+                      key={product.blogId._id}
+                      id={product.blogId._id}
                       className="text-left border-b border-gray-300"
                     >
                       <td className="p-4 border-b border-blue-gray-50">
@@ -170,7 +263,7 @@ const Reportable = () => {
                           <div className="flex flex-col">
                             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900"></p>
                             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                              {product._id}
+                              {product.blogId.email}
                             </p>
                           </div>
                         </div>
@@ -178,7 +271,7 @@ const Reportable = () => {
                       <td className="p-4 border-b border-blue-gray-50">
                         <div className="flex flex-col">
                           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {product.phoneNumber}
+                            {product.blogId.phoneNumber}
                           </p>
                           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
                             WhatsApp
@@ -187,20 +280,25 @@ const Reportable = () => {
                       </td>
                       <td className="p-4 border-b border-blue-gray-50">
                         <div className="w-max">
-                          <div className="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-green-900 uppercase rounded-md select-none whitespace-nowrap bg-green-500/20">
-                            <span className="">Completed</span>
+                          <div
+                            className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap  ${getSeverityBgColor(
+                              product.blogId.status
+                            )}`}
+                          >
+                            <span className="">{product.blogId.status}</span>
                           </div>
                         </div>
                       </td>
                       <td className="p-4 border-b border-blue-gray-50">
                         <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                          {new Date(product.createdAt).toLocaleDateString(
-                            "en-GB"
-                          )}
+                          {new Date(
+                            product.blogId.dateOfReport
+                          ).toLocaleDateString("en-GB")}
                         </p>
                       </td>
-                      <td className="p-4 flex border-b border-blue-gray-50">
-                        <button
+                      <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
+                        <Link
+                        href={`/editReports/${product.blogId._id}`}
                           className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                           type="button"
                         >
@@ -215,12 +313,10 @@ const Reportable = () => {
                               <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
                             </svg>
                           </span>
-                        </button>
-                        <button
+                        </Link>
+                        <Link
                           classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
-                          onClick={() =>
-                            router.replace(`/blogdetails/${product._id}`)
-                          }
+                          href={`/blogdetails/${product.blogId._id}`}
                           type="button"
                           className="block"
                           data-hs-overlay="#hs-ai-invoice-modal"
@@ -241,15 +337,44 @@ const Reportable = () => {
                               View
                             </span>
                           </span>
-                        </button>
-                        <button>
-                          <Image
-                            src={DeleteIcon}
-                            width={30}
-                            height={20}
-                            className="ml-2"
-                          ></Image>
-                        </button>
+                        </Link>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button>
+                              <Image
+                                src={DeleteIcon}
+                                width={30}
+                                height={20}
+                                className="ml-2"
+                              ></Image>
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete your Product and remove data
+                                from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() =>
+                                  handleDeleteProduct(
+                                    product._id,
+                                    product.blogId._id
+                                  )
+                                }
+                              >
+                                Continue
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </td>
                       {/* <td className="size-px whitespace-nowrap">
                   <button type="button" className="block" data-hs-overlay="#hs-ai-invoice-modal">
@@ -266,24 +391,64 @@ const Reportable = () => {
                 </td> */}
                     </tr>
                   ))
+                ) : (
+                  <div>No Reports available. Please add some.</div>
                 )}
               </tbody>
             </table>
           </div>
           <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-              Page 1 of 10
+              Page {currentPage} of {totalPages}
+              
             </p>
             <div className="flex gap-2">
               <button
                 className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
+                onClick={() => {
+                  if (currentPage > 1) {
+                    paginate(currentPage - 1);
+                  }
+                }}
+                disabled={currentPage === 1}
               >
                 Previous
               </button>
+              <div>
+                {Array.from(
+                  {
+                    length: totalPages
+                  },
+                  (_, index) => (
+                    <button
+                      key={index + 1}
+                      className={`mx-1 px-3 py-1 border ${
+                        currentPage === index + 1
+                          ? "bg-blue-500 text-white"
+                          : "border-gray-400 hover:bg-gray-200"
+                      }`}
+                      onClick={() => paginate(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                )}
+              </div>
               <button
                 className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button"
+                onClick={() => {
+                  if (
+                    currentPage < totalPages
+                  ) {
+                    paginate(currentPage + 1);
+                  }
+                }}
+                disabled={
+                  currentPage === totalPages
+                  
+                }
               >
                 Next
               </button>

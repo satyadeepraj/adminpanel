@@ -3,7 +3,7 @@ import { Buffer } from "buffer";
 import DatauriParser from "datauri/parser";
 import cloudinary from "cloudinary";
 import Product from "@/model/ProductModel";
-import mongoose from "mongoose";
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -25,7 +25,7 @@ export async function POST(request) {
   const startDate = new Date(formData.get("startDate"));
   const endDate = new Date(formData.get("endDate"));
   
-  const reportIds = formData.getAll("BlogPost").map(id => mongoose.Types.ObjectId(id));
+
 
   const image1 = formData.get("image1");
   const image2 = formData.get("image2");
@@ -53,7 +53,7 @@ export async function POST(request) {
       startDate,
       endDate,
       images: cloudinaryUrls || [],
-      reports: reportIds,
+     
     });
 
     return new Response(JSON.stringify({

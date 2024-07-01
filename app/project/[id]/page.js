@@ -3,7 +3,7 @@ import React from "react";
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
 import { ToastContainer } from "react-toastify";
-import { EditProject } from "./EditProject";
+import { Project } from "./Project";
 
 const page = () => {
   return (
@@ -16,7 +16,7 @@ const page = () => {
             <SideBar />
           </div>
           <div className="w-[60%] mt-24 mx-auto">
-          <EditProject/>
+          <Project/>
           </div>
         </div>
       </div>

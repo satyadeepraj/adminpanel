@@ -5,7 +5,7 @@ import DatauriParser from "datauri/parser";
 import cloudinary from "cloudinary";
 import Product from "@/model/ProductModel";
 import { authOptions } from "@/lib/auth";
-
+import mongoose from "mongoose";
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -14,27 +14,31 @@ cloudinary.config({
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request, { params }) {
+export async function PUT(request,{ params }) {
+  await connectToDatabase();
+  const parser = new DatauriParser();
+  const formData = await request.formData();
+
+  const productId = params.id // Assuming you send productId in the request
+
+  // Retrieve updated data from form
+  const companyName = formData.get("companyName");
+  const projectName = formData.get("projectName");
+  const scopeUrl = formData.get("scopeUrl");
+  const type = formData.get("type");
+  const startDate = new Date(formData.get("startDate"));
+  const endDate = new Date(formData.get("endDate"));
+
+ 
+
+  const image1 = formData.get("image1");
+  const image2 = formData.get("image2");
+  const image3 = formData.get("image3");
+  const image4 = formData.get("image4");
+  const imageFiles = [image1, image2, image3, image4].filter(Boolean);
+
   try {
-    const parser = new DatauriParser();
-    await connectToDatabase();
-    const formData = await request.formData();
-
-    const companyName = formData.get("companyName");
-    const projectName = formData.get("projectName");
-    const scopeUrl = formData.get("scopeUrl");
-    const type = formData.get("type");
-    const startDate = new Date(formData.get("startDate"));
-    const endDate = new Date(formData.get("endDate"));
-
-    const image1 = formData.get("image1");
-    const image2 = formData.get("image2");
-    const image3 = formData.get("image3");
-    const image4 = formData.get("image4");
-    const imageFiles = [image1, image2, image3, image4].filter(Boolean);
-
-    const productId = params.id;
-
+    // Upload images to Cloudinary
     const uploadPromises = imageFiles.map(async (imageFile) => {
       const buffer = Buffer.from(await imageFile.arrayBuffer());
       const file64 = parser.format(imageFile.name, buffer);
@@ -46,58 +50,36 @@ export async function POST(request, { params }) {
 
     const cloudinaryUrls = await Promise.all(uploadPromises);
 
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return new Response(
-        JSON.stringify({ status: "fail", message: "Unauthorized" }),
-        {
-          headers: { "Content-Type": "application/json" },
-          status: 401,
-        }
-      );
-    }
-
-    const userId = session.user.id;
-
-    const updateData = {
-      companyName,
-      projectName,
-      scopeUrl,
-      type,
-      startDate,
-      endDate,
-      images: cloudinaryUrls || [],
-    };
-
-    const result = await Product.updateOne(
-      { _id: userId, "products._id": productId },
-      { $set: { "products.$": updateData } }
+    // Find the existing product by productId and update it
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        companyName,
+        projectName,
+        scopeUrl,
+        type,
+        startDate,
+        endDate,
+        images: cloudinaryUrls || [],
+       
+      },
+      { new: true }
     );
 
-    if (result.nModified === 0) {
+    if (!updatedProduct) {
       return new Response(
-        JSON.stringify({
-          status: "fail",
-          message: "Product not found or not updated",
-        }),
+        JSON.stringify({ status: "fail", message: "Product not found" }),
         {
           headers: { "Content-Type": "application/json" },
           status: 404,
         }
       );
     }
-    // Fetch updated product data
-    const updatedProduct = await Product.findOne({ _id: userId });
-    const updatedProductData = updatedProduct.products.find(
-      (p) => p._id.toString() === productId
-    );
 
     return new Response(
       JSON.stringify({
         status: "success",
-        message: "Product updated successfully",
-        product: updatedProductData,
+        data: updatedProduct,
       }),
       {
         headers: { "Content-Type": "application/json" },

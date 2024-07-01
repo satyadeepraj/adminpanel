@@ -6,9 +6,9 @@ const sectionSchema = new mongoose.Schema({
   },
   severity: {
     type: String,
-    enum: ['Critical', 'High', 'Medium', 'Low'],
+    enum: ["Critical", "High", "Medium", "Low"],
   },
-  images:[{type:String}],
+  images: [{ type: String }],
 });
 
 const authorSchema = new mongoose.Schema({
@@ -21,31 +21,29 @@ const authorSchema = new mongoose.Schema({
   dateOfTesting: {
     type: Date,
     default: null,
-    
   },
   dateOfTestingCompletion: {
     type: Date,
     default: null,
-  
   },
   dateOfApproval: {
     type: Date,
     default: null,
-  }
+  },
 });
 
 const blogPostSchema = new mongoose.Schema({
-  email:{
-    type:String,
+  email: {
+    type: String,
   },
-  documentype:{
-    type:String,
+  documentype: {
+    type: String,
   },
-  documentversion:{
-    type:String,
+  documentversion: {
+    type: String,
   },
-  dateOfReport:{
-   type:Date,
+  dateOfReport: {
+    type: Date,
   },
   maintitle: {
     type: String,
@@ -53,7 +51,10 @@ const blogPostSchema = new mongoose.Schema({
   maincontent: {
     type: String,
   },
-
+  status:{
+    type: String,
+    enum: ["Open", "PendingForReview", "PendingForApproval", "Closed"],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -62,6 +63,7 @@ const blogPostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+ 
   images: [{ type: String }],
   author: [authorSchema],
   sections: [sectionSchema],

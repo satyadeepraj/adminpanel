@@ -17,29 +17,23 @@ import {
 } from "@/components/ui/dialog";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useParams } from "next/navigation";
+import { useData } from "@/context/DataContext";
+import Loader from "@/components/UserComponent/Loader";
 
-export function EditProject({ id }) {
+export function EditProject() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
-
- 
-
-  const fetchProduct = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`/api/product/${id}`);
-      if (response.status === 200 && response.data.product) {
-        setProduct(response.data.product);
-      } else {
-        toast.error("Product data not found.");
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      toast.error("Failed to fetch product. Please try again.");
-      setLoading(false);
+  const [selectedImage1, setSelectedImage1] = useState(null);
+  const { productData } = useData();
+  const params = useParams();
+  const { id } = params;
+  
+  useEffect(() => {
+    if (productData) {
+      setProduct(productData.find((e) => e._id == id));
     }
-  };
+  }, [productData, id]);
 
   const companyNameRef = useRef();
   const projectNameRef = useRef();
@@ -48,10 +42,9 @@ export function EditProject({ id }) {
   const startDateRef = useRef();
   const endDateRef = useRef();
   const image1Ref = useRef();
-  const image2Ref = useRef();
-  const image3Ref = useRef();
-  const image4Ref = useRef();
-  const reportIdsRef = useRef();
+  // const image2Ref = useRef();
+  // const image3Ref = useRef();
+  // const image4Ref = useRef();
 
   const handleFormSubmit = async () => {
     const formData = new FormData();
@@ -63,50 +56,55 @@ export function EditProject({ id }) {
     formData.append("startDate", startDateRef.current.value);
     formData.append("endDate", endDateRef.current.value);
 
-    const reportIds = reportIdsRef.current.value
-      .split(",")
-      .map((id) => id.trim());
-    reportIds.forEach((id) => formData.append("reports", id));
-
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
     }
-    if (image2Ref.current.files[0]) {
-      formData.append("image2", image2Ref.current.files[0]);
-    }
-    if (image3Ref.current.files[0]) {
-      formData.append("image3", image3Ref.current.files[0]);
-    }
-    if (image4Ref.current.files[0]) {
-      formData.append("image4", image4Ref.current.files[0]);
-    }
-
+    // if (image2Ref.current.files[0]) {
+    //   formData.append("image2", image2Ref.current.files[0]);
+    // }
+    // if (image3Ref.current.files[0]) {
+    //   formData.append("image3", image3Ref.current.files[0]);
+    // }
+    // if (image4Ref.current.files[0]) {
+    //   formData.append("image4", image4Ref.current.files[0]);
+    // }
+             
     try {
       setLoading(true);
-      const response = await axios.post(`/api/product/${id}`, formData, {
+      const response = await axios.put(`/api/product/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response.status === 200 && response.data.status === "success") {
-        toast.success(response.data.message);
-
-        // Refresh product data in the context after successful update
-        window.location.reload(); // This could be improved to update state instead
+        // Update product data in the context after successful update
+        const updatedProduct = response.data.product;
+        const updatedProductData = productData.map((prod) =>
+          prod._id === id ? updatedProduct : prod
+        );
+        setProduct(updatedProductData);
+        alert("Product added successfully!");
+        // Reset selected image state
+        setSelectedImage1(null);
       } else {
         toast.error(response.data.message || "Failed to update product.");
       }
-
-      setLoading(false);
     } catch (error) {
       console.error("Error updating product:", error);
       toast.error("Failed to update product. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
-
+  const handleImage1Change = (e) => {
+    setSelectedImage1(URL.createObjectURL(e.target.files[0]));
+  };
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   if (!product) {
@@ -157,7 +155,9 @@ export function EditProject({ id }) {
           id="startDate"
           type="date"
           ref={startDateRef}
-          defaultValue={product.startDate || ""}
+          defaultValue={
+            product.startDate ? product.startDate.substr(0, 10) : ""
+          }
         />
       </div>
       <div className="space-y-2">
@@ -166,24 +166,34 @@ export function EditProject({ id }) {
           id="endDate"
           type="date"
           ref={endDateRef}
-          defaultValue={product.endDate || ""}
+          defaultValue={product.endDate ? product.endDate.substr(0, 10) : ""}
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="reports">Report IDs (comma separated)</Label>
-        <Textarea
-          id="reports"
-          placeholder="Enter report IDs"
-          ref={reportIdsRef}
-          defaultValue={(product.reports && product.reports.join(", ")) || ""}
-        />
-      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="image-1">Image 1</Label>
-          <Input id="image-1" type="file" ref={image1Ref} />
+          <Input
+            id="image-1"
+            type="file"
+            ref={image1Ref}
+            onChange={handleImage1Change}
+          />
+          {selectedImage1 ? (
+            <img
+              src={selectedImage1}
+              alt="Selected Image 1"
+              className="mt-2 w-[20%] mx-auto"
+            />
+          ) : product.images && product.images[0] ? (
+            <img
+              src={product.images[0]}
+              alt="Current Image 1"
+              className="mt-2 w-[20%] mx-auto"
+            />
+          ) : null}
         </div>
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label htmlFor="image-2">Image 2</Label>
           <Input id="image-2" type="file" ref={image2Ref} />
         </div>
@@ -194,12 +204,13 @@ export function EditProject({ id }) {
         <div className="space-y-2">
           <Label htmlFor="image-4">Image 4</Label>
           <Input id="image-4" type="file" ref={image4Ref} />
-        </div>
+        </div> */}
       </div>
-
-      <Button onClick={handleFormSubmit} type="submit" disabled={loading}>
-        {loading ? "Updating..." : "Update Product"}
-      </Button>
+      <div className="mt-2 flex px-96 py-4">
+        <Button onClick={handleFormSubmit} type="submit" disabled={loading}>
+          {loading ? "Updating..." : "Update Product"}
+        </Button>
+      </div>
     </div>
   );
 }

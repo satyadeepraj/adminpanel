@@ -3,7 +3,8 @@ import React from "react";
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
 import { ToastContainer } from "react-toastify";
-import { EditProject } from "./EditProject";
+import { EditProject } from "@/app/editprojects/[id]/EditProject";
+
 
 const page = () => {
   return (

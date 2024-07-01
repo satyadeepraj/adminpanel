@@ -18,6 +18,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Loader from "../UserComponent/Loader";
+import { useParams } from "next/navigation";
 
 export function AddBlog() {
   const maintitleRef = useRef();
@@ -31,23 +42,29 @@ export function AddBlog() {
   const dateOfTestingCompletionRef = useRef();
   const dateOfApprovalRef = useRef();
   const maincontentRef = useRef();
+ 
+
+  const params = useParams();
+  const { id } = params;
+  console.log(id);
 
   const image1Ref = useRef();
   const image2Ref = useRef();
   const image3Ref = useRef();
   const image4ref = useRef();
-
+  const [status,SetStatus]= useState("")
+  const [loading, setLoading] = useState(false);
   const [sections, setSections] = useState([
     { vulnerability: "", severity: "", images: [""] },
   ]);
 
   const handleFormSubmit = async () => {
     const formData = new FormData();
-
+    formData.append("productId", id);
     formData.append("email", emailRef.current.value);
     formData.append("documentype", documentypeRef.current.value);
     formData.append("documentversion", documentversionRef.current.value);
-
+    formData.append("status", status);
     formData.append("maintitle", maintitleRef.current.value);
     formData.append("maincontent", maincontentRef.current.value);
 
@@ -59,14 +76,15 @@ export function AddBlog() {
 
     const formattedDateOfReport = formatDate(dateOfReportRef.current.value);
     formData.append("dateOfReport", formattedDateOfReport);
-  
 
     const author = [
       {
         preparedby: preparedbyRef.current.value,
         approvedby: approvedbyRef.current.value,
         dateOfTesting: formatDate(dateOfTestingRef.current.value),
-        dateOfTestingCompletion: formatDate(dateOfTestingCompletionRef.current.value),
+        dateOfTestingCompletion: formatDate(
+          dateOfTestingCompletionRef.current.value
+        ),
         dateOfApproval: formatDate(dateOfApprovalRef.current.value),
       },
     ];
@@ -105,18 +123,24 @@ export function AddBlog() {
     // Add scammer details to formData
 
     try {
+      setLoading(true);
       const response = await axios.post("/api/addBlogs", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log(response);
-      toast.success("Blog post added successfully!", {
-        onClose: () => window.location.reload(),
-      });
+      alert("Report added successfully!");
+
+      // Reload page after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to add blog post. Please try again.");
+      toast.error("Failed to add Report . Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -146,198 +170,281 @@ export function AddBlog() {
   };
 
   return (
-    <div className=" min-h-screen w-full">
-      <Header />
-      <ToastContainer />
-      <div className="flex flex-col sm:flex-row   max-w-full min-h-screen">
-        <div className="w-[25%] mobile:hidden">
-          <SideBar />
-        </div>
-        <div className="w-full mt-16 max-w-6xl mx-auto p-6 md:p-8 lg:p-10">
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="maintitle">Title</Label>
-              <Input
-                id="maintitle"
-                placeholder="Enter blog post title"
-                ref={maintitleRef}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="maincontent">Content</Label>
-              <Textarea
-                className="min-h-[300px]"
-                id="maincontent"
-                placeholder="Enter blog post content"
-                ref={maincontentRef}
-              />
-            </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          className="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          type="button"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            stroke-width="2"
+            className="w-4 h-4"
+          >
+            <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path>
+          </svg>
+          Add Reports
+        </button>
+      </DialogTrigger>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" placeholder="Enter email" ref={emailRef} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dateOfReport">Date of Report</Label>
-                <Input
-                  id="dateOfReport"
-                  placeholder="Enter date of report"
-                  ref={dateOfReportRef}
-                  type="date"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="documentversion">Document Version</Label>
-                <Input
-                  id="documentversion"
-                  placeholder="Enter document version"
-                  ref={documentversionRef}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="documentype">Document Type</Label>
-                <Input
-                  id="documentype"
-                  placeholder="Enter document type"
-                  ref={documentypeRef}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="preparedby">Prepared By</Label>
-                <Input
-                  id="preparedby"
-                  placeholder="Enter prepared by"
-                  ref={preparedbyRef}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="approvedby">Approved By</Label>
-                <Input
-                  id="approvedby"
-                  placeholder="Enter approved by"
-                  ref={approvedbyRef}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="dateOfTesting">Date of Testing</Label>
-                <Input
-                  id="dateOfTesting"
-                  placeholder="Enter date of testing"
-                  ref={dateOfTestingRef}
-                  type="date"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dateOfTestingCompletion">
-                  Date of Testing Completion
-                </Label>
-                <Input
-                  id="dateOfTestingCompletion"
-                  placeholder="Enter date of testing completion"
-                  ref={dateOfTestingCompletionRef}
-                  type="date"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dateOfApproval">Date of Approval</Label>
-                <Input
-                  id="dateOfApproval"
-                  placeholder="Enter date of approval"
-                  ref={dateOfApprovalRef}
-                  type="date"
-                />
-              </div>
-            </div>
-            {sections.map((section, index) => (
-              <div key={index} className="space-y-2">
-                <Label htmlFor={`section-vulnerability-${index}`}>
-                  Section {index + 1} Vulnerability
-                </Label>
-                <Input
-                  id={`section-vulnerability-${index}`}
-                  placeholder="Enter section vulnerability"
-                  value={section.vulnerability}
-                  onChange={(e) =>
-                    handleSectionChange(index, "vulnerability", e.target.value)
-                  }
-                />
-                <Label htmlFor={`section-severity-${index}`}>
-                  Section {index + 1} Severity
-                </Label>
-                <Select
-                  onValueChange={(value) =>
-                    handleSectionChange(index, "severity", value)
-                  }
-                  value={section.severity}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select severity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Severity</SelectLabel>
-                      <SelectItem value="Critical" className="bg-[]">Critical</SelectItem>
-                      <SelectItem value="High" className="bg-[]">High</SelectItem>
-                      <SelectItem value="Medium" className="bg-[]">Medium</SelectItem>
-                      <SelectItem value="Low" className="bg-[]">Low</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <Label htmlFor={`section-images-${index}`}>
-                  Section {index + 1} Images
-                </Label>
-                {section.images.map((image, imageIndex) => (
-                  <Input
-                    key={imageIndex}
-                    id={`section-image-${index}-${imageIndex}`}
-                    placeholder={`Upload section image ${imageIndex + 1}`}
-                    type="file"
-                    onChange={(e) =>
-                      handleImageChange(index, imageIndex, e.target.files[0])
-                    }
-                  />
-                ))}
-                <Button onClick={() => addImage(index)}>Add Image</Button>
-              </div>
-            ))}
-            <Button type="button" onClick={addSection}>
-              Add Section
-            </Button>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="image-1">Image 1</Label>
-                <Input ref={image1Ref} id="image-1" required type="file" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="image-2">Image 2</Label>
-                <Input ref={image2Ref} id="image-2" required type="file" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="image-3">Image 3</Label>
-                <Input ref={image3Ref} id="image-3" required type="file" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="image-4">Image 4</Label>
-                <Input ref={image4ref} id="image-4" required type="file" />
-              </div>
-            </div>
-            <div className="flex justify-end">
-              <Button onClick={handleFormSubmit} type="submit">
-                Publish
-              </Button>
-            </div>
+      <DialogContent className="max-w-full max-h-full sm:max-w-[625px] sm:max-h-[600px] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Add a New Report</DialogTitle>
+          <DialogDescription>
+            Fill out the form below to add a report.
+          </DialogDescription>
+        </DialogHeader>
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <Loader />
           </div>
-        </div>
-      </div>
-    </div>
+        ) : (
+          <>
+            <div className="w-full">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="maintitle">Title</Label>
+                  <Input
+                    id="maintitle"
+                    placeholder="Enter blog post title"
+                    ref={maintitleRef}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maincontent">Content</Label>
+                  <Textarea
+                    className="min-h-[100px]"
+                    id="maincontent"
+                    placeholder="Enter blog post content"
+                    ref={maincontentRef}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      placeholder="Enter email"
+                      ref={emailRef}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfReport">Date of Report</Label>
+                    <Input
+                      id="dateOfReport"
+                      placeholder="Enter date of report"
+                      ref={dateOfReportRef}
+                      type="date"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="documentversion">Document Version</Label>
+                    <Input
+                      id="documentversion"
+                      placeholder="Enter document version"
+                      ref={documentversionRef}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="documentype">Document Type</Label>
+                    <Input
+                      id="documentype"
+                      placeholder="Enter document type"
+                      ref={documentypeRef}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="preparedby">Prepared By</Label>
+                    <Input
+                      id="preparedby"
+                      placeholder="Enter prepared by"
+                      ref={preparedbyRef}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="approvedby">Approved By</Label>
+                    <Input
+                      id="approvedby"
+                      placeholder="Enter approved by"
+                      ref={approvedbyRef}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="space-y-2">
+                    <Label htmlFor="approvedby">Status</Label>
+                    <Select
+                     onValueChange={(value) => SetStatus(value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="Open" className="bg-[]">
+                            Open
+                          </SelectItem>
+                          <SelectItem
+                            value="PendingForReview"
+                            className="bg-[]"
+                          >
+                            PendingForReview
+                          </SelectItem>
+                          <SelectItem
+                            value="PendingForApproval"
+                            className="bg-[]"
+                          >
+                            PendingForApproval
+                          </SelectItem>
+                          <SelectItem value="Closed" className="bg-[]">
+                            Closed
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfTesting">Date of Testing</Label>
+                    <Input
+                      id="dateOfTesting"
+                      placeholder="Enter date of testing"
+                      ref={dateOfTestingRef}
+                      type="date"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfTestingCompletion">
+                      Date of Testing Completion
+                    </Label>
+                    <Input
+                      id="dateOfTestingCompletion"
+                      placeholder="Enter date of testing completion"
+                      ref={dateOfTestingCompletionRef}
+                      type="date"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfApproval">Date of Approval</Label>
+                    <Input
+                      id="dateOfApproval"
+                      placeholder="Enter date of approval"
+                      ref={dateOfApprovalRef}
+                      type="date"
+                    />
+                  </div>
+                </div>
+                {sections.map((section, index) => (
+                  <div key={index} className="space-y-2">
+                    <Label htmlFor={`section-vulnerability-${index}`}>
+                      Section {index + 1} Vulnerability
+                    </Label>
+                    <Input
+                      id={`section-vulnerability-${index}`}
+                      placeholder="Enter section vulnerability"
+                      value={section.vulnerability}
+                      onChange={(e) =>
+                        handleSectionChange(
+                          index,
+                          "vulnerability",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <Label htmlFor={`section-severity-${index}`}>
+                      Section {index + 1} Severity
+                    </Label>
+                    <Select
+                      onValueChange={(value) =>
+                        handleSectionChange(index, "severity", value)
+                      }
+                      value={section.severity}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select severity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Severity</SelectLabel>
+                          <SelectItem value="Critical" className="bg-[]">
+                            Critical
+                          </SelectItem>
+                          <SelectItem value="High" className="bg-[]">
+                            High
+                          </SelectItem>
+                          <SelectItem value="Medium" className="bg-[]">
+                            Medium
+                          </SelectItem>
+                          <SelectItem value="Low" className="bg-[]">
+                            Low
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Label htmlFor={`section-images-${index}`}>
+                      Section {index + 1} Images
+                    </Label>
+                    {section.images.map((image, imageIndex) => (
+                      <Input
+                        key={imageIndex}
+                        id={`section-image-${index}-${imageIndex}`}
+                        placeholder={`Upload section image ${imageIndex + 1}`}
+                        type="file"
+                        onChange={(e) =>
+                          handleImageChange(
+                            index,
+                            imageIndex,
+                            e.target.files[0]
+                          )
+                        }
+                      />
+                    ))}
+                    <Button onClick={() => addImage(index)}>Add Image</Button>
+                  </div>
+                ))}
+                <Button type="button" onClick={addSection}>
+                  Add Section
+                </Button>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="image-1">Image 1</Label>
+                    <Input ref={image1Ref} id="image-1" required type="file" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="image-2">Image 2</Label>
+                    <Input ref={image2Ref} id="image-2" required type="file" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="image-3">Image 3</Label>
+                    <Input ref={image3Ref} id="image-3" required type="file" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="image-4">Image 4</Label>
+                    <Input ref={image4ref} id="image-4" required type="file" />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={handleFormSubmit} type="submit">
+                    Publish
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

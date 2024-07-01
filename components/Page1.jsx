@@ -34,7 +34,7 @@ const Page1 = () => {
       <div className="mb-8">
         <Image
           className="h-[140px] w-[200px]"
-          src="/logo.png"
+          src="/Company-logo.png"
           alt="Logo"
           width={100}
           height={100}

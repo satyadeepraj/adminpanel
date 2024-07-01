@@ -1,3 +1,5 @@
+
+
 import connectToDatabase from "@/lib/db";
 import { Buffer } from "buffer";
 import DatauriParser from "datauri/parser";
@@ -13,10 +15,11 @@ cloudinary.config({
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request) {
+export async function PUT(request) {
   await connectToDatabase();
   const parser = new DatauriParser();
   const formData = await request.formData();
+  const blogId = formData.get("blogId");
   const email = formData.get("email");
   const documentype = formData.get("documentype");
   const documentversion = formData.get("documentversion");
@@ -25,7 +28,7 @@ export async function POST(request) {
   const maincontent = formData.get("maincontent");
   const datePublished = new Date(formData.get("datePublished"));
   const productId = formData.get("productId");
-  const status = formData.get("status");
+
   const author = JSON.parse(formData.get("author"));
 
   const image1 = formData.get("image1");
@@ -92,39 +95,81 @@ export async function POST(request) {
 
     await Promise.all(sectionUploadPromises);
 
-    const newBlog = await BlogPost.create({
-      email,
-      documentype,
-      documentversion,
-      dateOfReport,
-      status,
-      maintitle,
-      maincontent,
-      datePublished,
-      images: cloudinaryUrls || [],
-      author,
-      sections,
-    });
-
-    const product = await Product.findById(productId);
-    console.log(product, newBlog._id, newBlog._id.toString());
-    if (!product) {
-      // Handle case where product with given ID is not found
-      return Response.json({ status: "fail", message: "Product not found" });
-    }
-
-    // Now you can safely push the new blog ID into the reports array
-    product.reports.push({ blogId: newBlog._id.toString() });
-
-    // Save the updated product
-    const updatedProduct = await product.save();
+    const updatedBlog = await BlogPost.findByIdAndUpdate(
+      blogId,
+      {
+        email,
+        documentype,
+        documentversion,
+        dateOfReport,
+        maintitle,
+        maincontent,
+        datePublished,
+        images: cloudinaryUrls || [],
+        author,
+        sections,
+      },
+      { new: true }
+    );
 
     return Response.json({
       status: "success",
-      data: newBlog,
+      data: updatedBlog,
     });
   } catch (error) {
     console.error(error);
     return Response.json({ status: "fail" });
+  }
+}
+
+export async function DELETE(request) {
+  await connectToDatabase();
+  const { searchParams } = new URL(request.url);
+  const blogId = searchParams.get("blogId");
+  const productId = searchParams.get("productId");
+ console.log(`Received blogId: ${blogId}, productId: ${productId}`);
+  if (!blogId || !productId) {
+    return new Response(
+      JSON.stringify({ status: "fail", message: "Missing blogId or productId" }),
+      { status: 400 }
+    );
+  }
+  try {
+    // Find and delete the blog post
+    const deletedBlog = await BlogPost.findByIdAndDelete(blogId);
+    if (!deletedBlog) {
+      return new Response(
+        JSON.stringify({ status: "fail", message: "Blog post not found" }),
+        { status: 404 }
+      );
+    }
+
+    // Find the associated product
+    const product = await Product.findById(productId);
+    if (product) {
+      // Filter out the deleted blog ID from the product's reports array
+      const initialReportsLength = product.reports.length;
+      product.reports = product.reports.filter(
+        (report) => report.blogId.toString() !== blogId
+      );
+
+      // Save the updated product only if there was a change
+      if (product.reports.length !== initialReportsLength) {
+        await product.save();
+      } else {
+        console.log("Blog ID was not found in product reports array");
+      }
+    }
+
+    return new Response(
+      JSON.stringify({ status: "success", message: "Blog post deleted" }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return new Response(
+      JSON.stringify({ status: "fail", message: error.message }),
+      { status: 500 }
+    );
   }
 }

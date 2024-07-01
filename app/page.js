@@ -1,6 +1,7 @@
 "use client"
 
-import { AddBlog } from "@/components/component/add-blog";
+import Projectable from "@/components/component/Project-Table";
+
 
 
 export default function Home() {
@@ -8,7 +9,7 @@ export default function Home() {
 
   return (
     <main className="">
-      <AddBlog/>
+      <Projectable/>
     </main>
   );
 }

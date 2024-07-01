@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import BlogPost from "./BlogModel";
 
 // Product Schema
 const productSchema = new mongoose.Schema({
@@ -23,12 +24,11 @@ const productSchema = new mongoose.Schema({
     default: null,
   },
   images: [{ type: String }],
-  reports: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BlogPost",
-    },
-  ],
+  // Add BlogPost as a subdocument or an array of subdocuments
+  reports: [{blogId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BlogPost",
+  }}],
 });
 
 const Product =

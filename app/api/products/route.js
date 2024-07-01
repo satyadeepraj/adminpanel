@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export async function GET(request) {
   try {
     await connectToDatabase();
-    const product = await Product.find();
+    const product = await Product.find().populate('reports.blogId').exec();
     return Response.json({
       status: "product",
       data: product,

@@ -3,11 +3,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
-
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Loader from "../UserComponent/Loader";
 
 export function AddProduct() {
   const companyNameRef = useRef();
@@ -32,8 +33,7 @@ export function AddProduct() {
   const image3Ref = useRef();
   const image4Ref = useRef();
 
-  const reportIdsRef = useRef();
-
+  const [loading, setLoading] = useState(false);
   const handleFormSubmit = async () => {
     const formData = new FormData();
 
@@ -43,11 +43,6 @@ export function AddProduct() {
     formData.append("type", typeRef.current.value);
     formData.append("startDate", startDateRef.current.value);
     formData.append("endDate", endDateRef.current.value);
-
-    const reportIds = reportIdsRef.current.value
-      .split(",")
-      .map((id) => id.trim());
-    reportIds.forEach((id) => formData.append("reports", id));
 
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
@@ -63,23 +58,27 @@ export function AddProduct() {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post("/api/addProduct", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       alert("Product added successfully!");
-      
-           // Reload page after a short delay
+
+      // Reload page after a short delay
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-      
     } catch (error) {
       console.log(error);
-      alert("Failed to add product. Please try again.");
+      toast.error("Failed to add product. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+ 
 
   return (
     <Dialog>
@@ -109,6 +108,12 @@ export function AddProduct() {
             Fill out the form below to add a new product.
           </DialogDescription>
         </DialogHeader>
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <Loader />
+          </div>
+        ) : (
+          <>
         <div className="space-y-2">
           <Label htmlFor="companyName">Company Name</Label>
           <Input
@@ -145,14 +150,7 @@ export function AddProduct() {
           <Label htmlFor="endDate">End Date</Label>
           <Input id="endDate" type="date" ref={endDateRef} />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="reports">Report IDs (comma separated)</Label>
-          <Textarea
-            id="reports"
-            placeholder="Enter report IDs"
-            ref={reportIdsRef}
-          />
-        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="image-1">Image 1</Label>
@@ -176,6 +174,8 @@ export function AddProduct() {
             Add Product
           </Button>
         </DialogFooter>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   );
