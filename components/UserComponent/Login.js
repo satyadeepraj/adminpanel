@@ -64,7 +64,7 @@ export function Login() {
       {
         loading: "Trying to login...",
         success: () => {
-          router.push("/addProducts");
+          router.push("/");
           return "Login successfully";
         },
         error: () => {
