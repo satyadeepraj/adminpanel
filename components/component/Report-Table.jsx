@@ -35,7 +35,7 @@ const Reportable = () => {
 
   const [startDate, setStartDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 1;
+  const productsPerPage = 2;
   console.log(productData && productData);
 
   useEffect(() => {

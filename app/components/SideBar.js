@@ -36,7 +36,7 @@ const SideBar = () => {
     <div className="fixed h-screen w-64 mt-5 mobile:mt-0  bg-[#EBEBEB] shadow-xl mobile:shadow-none text-xs  font-bold flex flex-col items-center overflow-auto">
       {/* Sidebar Content */}
 
-      <div className="w-full pt-6 mt-12 flex justify-left ml-16 mobile space-y-6 ">
+      <div className="w-full pt-6 mt-12 flex justify-left ml-16 space-y-6 ">
        
           <Link
             href="/"

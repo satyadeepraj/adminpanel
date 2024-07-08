@@ -50,7 +50,7 @@ const Page11 = () => {
         7. Detailed Findings
       </h2>
       <h2 className="text-2xl font-bold text-blue-600  py-4 ml-4">
-        7.1 Authentication Bypass
+        7.1    {section.vulnerability || "Authentication Bypass"}
       </h2>
       <table className="table-auto w-full mb-8">
         <tbody>

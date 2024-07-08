@@ -23,7 +23,7 @@ const Header = () => {
           </Button>
         </SheetTrigger>
         <SheetContent className="bg-[#EBEBEB]" side="left">
-          <div className="w-[25%]">
+          <div className="w-[25%] ">
             <SideBar />
           </div>
         </SheetContent>

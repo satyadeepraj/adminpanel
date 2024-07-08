@@ -10,6 +10,8 @@ import { AddProduct } from "./add-product";
 import { PencilIcon } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import { AiOutlineClose } from "react-icons/ai";
 
 import {
   AlertDialog,
@@ -33,32 +35,51 @@ const Projectable = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 2;
+  const [sortCriteria, setSortCriteria] = useState("projectName");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const productsPerPage = 6;
+
+  // Sorting function
+  const sortProducts = (products) => {
+    return products.sort((a, b) => {
+      const valueA = a[sortCriteria]?.toLowerCase() || "";
+      const valueB = b[sortCriteria]?.toLowerCase() || "";
+      if (sortOrder === "asc") {
+        return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
+      } else {
+        return valueA > valueB ? -1 : valueA < valueB ? 1 : 0;
+      }
+    });
+  };
 
   // Filter and paginate products based on search query
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = (productData || [])
-    .filter((product) => {
-      const companyName =
-        product.companyName && product.companyName.toLowerCase();
-      const projectName =
-        product.projectName && product.projectName.toLowerCase();
-      const productStartDate = new Date(product.startDate); // Assuming product.startDate is a valid date string
-      const productEndDate = new Date(product.endDate); // Assuming product.endDate is a valid date string
 
-      const isExactDateRange =
-        (!startDate ||
-          productStartDate.toDateString() === startDate.toDateString()) &&
-        (!endDate || productEndDate.toDateString() === endDate.toDateString());
+  const filteredProducts = (productData || []).filter((product) => {
+    const companyName =
+      product.companyName && product.companyName.toLowerCase();
+    const projectName =
+      product.projectName && product.projectName.toLowerCase();
+    const productStartDate = new Date(product.startDate); // Assuming product.startDate is a valid date string
+    const productEndDate = new Date(product.endDate); // Assuming product.endDate is a valid date string
 
-      const matchesSearchQuery =
-        (companyName && companyName.includes(searchQuery.toLowerCase())) ||
-        (projectName && projectName.includes(searchQuery.toLowerCase()));
+    const isExactDateRange =
+      (!startDate ||
+        productStartDate.toDateString() === startDate.toDateString()) &&
+      (!endDate || productEndDate.toDateString() === endDate.toDateString());
 
-      return matchesSearchQuery && isExactDateRange;
-    })
-    .slice(indexOfFirstProduct, indexOfLastProduct);
+    const matchesSearchQuery =
+      (companyName && companyName.includes(searchQuery.toLowerCase())) ||
+      (projectName && projectName.includes(searchQuery.toLowerCase()));
+
+    return matchesSearchQuery && isExactDateRange;
+  });
+
+  const currentProducts = sortProducts(filteredProducts).slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const handleDeleteProduct = async (productId) => {
     // Implement your delete logic here
@@ -76,7 +97,14 @@ const Projectable = () => {
     }
   };
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  const handleSortChange = (criteria) => {
+    if (sortCriteria === criteria) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortCriteria(criteria);
+      setSortOrder("asc");
+    }
+  };
   return (
     <div className=" min-h-screen w-full bg-[#F1F1F1]">
       <Header />
@@ -173,6 +201,22 @@ const Projectable = () => {
                     </li>
                   </ul>
                 </nav>
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    type="button"
+                    onClick={() => handleSortChange("companyName")}
+                  >
+                    Sort by Company Name
+                  </button>
+                  <button
+                    className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    type="button"
+                    onClick={() => handleSortChange("projectName")}
+                  >
+                    Sort by Project Name
+                  </button>
+                </div>
               </div>
 
               <div className="flex space-x-4">
@@ -204,14 +248,54 @@ const Projectable = () => {
               <thead>
                 <tr>
                   <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Company Name
-                    </p>
+                    <div className="flex items-center gap-1 ">
+                      <button
+                        className="flex items-center gap-1"
+                        onClick={() => handleSortChange("companyName")}
+                      >
+                        Company Name
+                        {sortCriteria === "companyName" &&
+                          sortOrder === "asc" && (
+                            <FaSortAlphaDown className="text-gray-500" />
+                          )}
+                        {sortCriteria === "companyName" &&
+                          sortOrder === "desc" && (
+                            <FaSortAlphaUp className="text-gray-500" />
+                          )}
+                      </button>
+                      {sortCriteria === "companyName" && ( // Render clear sort button only if sort criteria is set
+                        <button
+                          className="flex items-center gap-1 text-gray-500"
+                          onClick={() => handleSortChange("")}
+                        >
+                          <AiOutlineClose className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
                   </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                  <th className="flex items-center gap-1 p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                    <button
+                      className="flex items-center gap-1 text-left"
+                      onClick={() => handleSortChange("projectName")}
+                    >
                       Project Name
-                    </p>
+                      {sortCriteria === "projectName" &&
+                        sortOrder === "asc" && (
+                          <FaSortAlphaDown className="text-gray-500" />
+                        )}
+                      {sortCriteria === "projectName" &&
+                        sortOrder === "desc" && (
+                          <FaSortAlphaUp className="text-gray-500" />
+                        )}
+                    </button>
+                    {sortCriteria === "projectName" && ( // Render clear sort button only if sort criteria is set
+                      <button
+                        className="flex items-center gap-1 text-gray-500"
+                        onClick={() => handleSortChange("")}
+                      >
+                        <AiOutlineClose className="h-4 w-4" />
+                      </button>
+                    )}
                   </th>
                   <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
                     <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
