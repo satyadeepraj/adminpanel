@@ -12,6 +12,16 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
   AlertDialog,
@@ -35,7 +45,7 @@ const Projectable = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortCriteria, setSortCriteria] = useState("projectName");
+  const [sortCriteria, setSortCriteria] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const productsPerPage = 6;
 
@@ -201,25 +211,54 @@ const Projectable = () => {
                     </li>
                   </ul>
                 </nav>
-                <div className="flex items-center justify-center gap-4">
-                  <button
-                    className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button"
-                    onClick={() => handleSortChange("companyName")}
-                  >
-                    Sort by Company Name
-                  </button>
-                  <button
-                    className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button"
-                    onClick={() => handleSortChange("projectName")}
-                  >
-                    Sort by Project Name
-                  </button>
-                </div>
               </div>
 
               <div className="flex space-x-4">
+                <div>
+                  {" "}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      {" "}
+                      <button
+                        className="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button"
+                      >
+                        <Image
+                          className="w-4 h-4"
+                          width={100}
+                          height={100}
+                          src="/Sorting.png"
+                        />
+                        Sort
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>My Projects</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        {" "}
+                        <button
+                          className="w-full select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                          type="button"
+                          onClick={() => handleSortChange("companyName")}
+                        >
+                          Sort by Company Name
+                        </button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <button
+                          className="w-full select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                          type="button"
+                          onClick={() => handleSortChange("projectName")}
+                        >
+                          Sort by Project Name
+                        </button>
+                      </DropdownMenuItem>
+                      {/* <DropdownMenuItem>Team</DropdownMenuItem>
+                    <DropdownMenuItem>Subscription</DropdownMenuItem> */}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
                 <div>
                   <label></label>
                   <DatePicker
