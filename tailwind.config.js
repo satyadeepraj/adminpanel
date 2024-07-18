@@ -11,8 +11,8 @@ module.exports = {
   prefix: "",
   theme: {
     screens: {
-      'mobile': {'max': '639px'},
-      sm: "640px",
+      'mobile': {'max': '1023px'},
+     sm: "640px", 
       // => @media (min-width: 640px) { ... }
 
       md: "768px",

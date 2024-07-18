@@ -27,8 +27,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Loader from "../UserComponent/Loader";
+
 import { useParams } from "next/navigation";
+import Loader from "../UserComponent/Loader";
 
 export function AddBlog() {
   const maintitleRef = useRef();
@@ -42,21 +43,49 @@ export function AddBlog() {
   const dateOfTestingCompletionRef = useRef();
   const dateOfApprovalRef = useRef();
   const maincontentRef = useRef();
- 
 
   const params = useParams();
   const { id } = params;
   console.log(id);
 
   const image1Ref = useRef();
-  const image2Ref = useRef();
-  const image3Ref = useRef();
-  const image4ref = useRef();
-  const [status,SetStatus]= useState("")
+  // const image2Ref = useRef();
+  // const image3Ref = useRef();
+  // const image4ref = useRef();
+  const [status, SetStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [sections, setSections] = useState([
     { vulnerability: "", severity: "", images: [""] },
   ]);
+
+  const vulnerabilities = [
+    "Authentication Bypass",
+    "Broken Access Control",
+    "Reflected XSS",
+    "Back Button Browsing",
+    "Weak Cache Management",
+    "Request Flooding",
+    "Cross Site Request Forgery",
+    "Session Replay",
+    "Session Fixation",
+    "No Account Lockout",
+    "Use of Vulnerable Components",
+    "Directory Listing",
+    "Clickjacking Attack",
+    "Cookie Not Flagged ‘HttpOnly’",
+    "Server Banner Grabbing",
+    "Cookies without Secure Flag",
+    "HSTS Policy not Implemented",
+    "Path is Set to Default Root i.e. '/'",
+    "Audit Trails Not Implemented",
+    "Insecure Communication",
+    "DMARC Policy Not Implemented",
+    "CSP Policy Header not implemented",
+    "Weak Password Policy",
+    "Another Domain Open In Same Tab",
+    "Referer Policy Not Implemented",
+];
+
 
   const handleFormSubmit = async () => {
     const formData = new FormData();
@@ -108,17 +137,17 @@ export function AddBlog() {
       formData.append("image1", image1Ref.current.files[0]);
     }
 
-    if (image2Ref.current.files[0]) {
-      formData.append("image2", image2Ref.current.files[0]);
-    }
+    // if (image2Ref.current.files[0]) {
+    //   formData.append("image2", image2Ref.current.files[0]);
+    // }
 
-    if (image3Ref.current.files[0]) {
-      formData.append("image3", image3Ref.current.files[0]);
-    }
+    // if (image3Ref.current.files[0]) {
+    //   formData.append("image3", image3Ref.current.files[0]);
+    // }
 
-    if (image4ref.current.files[0]) {
-      formData.append("image4", image4ref.current.files[0]);
-    }
+    // if (image4ref.current.files[0]) {
+    //   formData.append("image4", image4ref.current.files[0]);
+    // }
     console.log(formData);
     // Add scammer details to formData
 
@@ -169,6 +198,17 @@ export function AddBlog() {
     setSections(newSections);
   };
 
+  const [filteredVulnerabilities, setFilteredVulnerabilities] =
+    useState(vulnerabilities);
+
+  const handleInputChange = (index, value) => {
+    handleSectionChange(index, "vulnerability", value);
+    const newFilteredVulnerabilities = vulnerabilities.filter((vulnerability) =>
+      vulnerability.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredVulnerabilities(newFilteredVulnerabilities);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -206,31 +246,18 @@ export function AddBlog() {
             <div className="w-full">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="maintitle">Title</Label>
+                  <Label htmlFor="maintitle">Type Of Testing</Label>
                   <Input
                     id="maintitle"
-                    placeholder="Enter blog post title"
+                    placeholder="Enter Report - Type Of Testing"
                     ref={maintitleRef}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maincontent">Content</Label>
-                  <Textarea
-                    className="min-h-[100px]"
-                    id="maincontent"
-                    placeholder="Enter blog post content"
-                    ref={maincontentRef}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      placeholder="Enter email"
-                      ref={emailRef}
-                    />
+                    <Label htmlFor="email">Target Scope</Label>
+                    <Input id="email" placeholder="Enter SOW" ref={emailRef} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="dateOfReport">Date of Report</Label>
@@ -283,9 +310,7 @@ export function AddBlog() {
                 <div>
                   <div className="space-y-2">
                     <Label htmlFor="approvedby">Status</Label>
-                    <Select
-                     onValueChange={(value) => SetStatus(value)}
-                    >
+                    <Select onValueChange={(value) => SetStatus(value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -348,23 +373,45 @@ export function AddBlog() {
                 </div>
                 {sections.map((section, index) => (
                   <div key={index} className="space-y-2">
-                    <Label htmlFor={`section-vulnerability-${index}`}>
-                      Section {index + 1} Vulnerability
-                    </Label>
-                    <Input
-                      id={`section-vulnerability-${index}`}
-                      placeholder="Enter section vulnerability"
-                      value={section.vulnerability}
-                      onChange={(e) =>
-                        handleSectionChange(
-                          index,
-                          "vulnerability",
-                          e.target.value
-                        )
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Label htmlFor={`section-vulnerability-${index}`}>
+                        Vulnerability {index + 1}
+                      </Label>
+                      <Input
+                        id={`section-vulnerability-${index}`}
+                        placeholder="Enter or select section vulnerability"
+                        value={section.vulnerability}
+                        onChange={(e) =>
+                          handleInputChange(index, e.target.value)
+                        }
+                      />
+
+                      <Select
+                        onValueChange={(value) =>
+                          handleSectionChange(index, "vulnerability", value)
+                        }
+                        value={section.vulnerability}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Vulnerability" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Vulnerability</SelectLabel>
+
+                            {filteredVulnerabilities.map(
+                              (vulnerability, index) => (
+                                <SelectItem key={index} value={vulnerability}>
+                                  {vulnerability}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <Label htmlFor={`section-severity-${index}`}>
-                      Section {index + 1} Severity
+                      Severity
                     </Label>
                     <Select
                       onValueChange={(value) =>
@@ -394,7 +441,7 @@ export function AddBlog() {
                       </SelectContent>
                     </Select>
                     <Label htmlFor={`section-images-${index}`}>
-                      Section {index + 1} Images
+                      POC {index + 1}
                     </Label>
                     {section.images.map((image, imageIndex) => (
                       <Input
@@ -411,29 +458,28 @@ export function AddBlog() {
                         }
                       />
                     ))}
-                    <Button onClick={() => addImage(index)}>Add Image</Button>
+                    <Button onClick={() => addImage(index)}>Add POC</Button>
                   </div>
                 ))}
                 <Button type="button" onClick={addSection}>
-                  Add Section
+                  Add Vulnerability
                 </Button>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="image-1">Image 1</Label>
+                    <Label htmlFor="image-1">Company Logo</Label>
                     <Input ref={image1Ref} id="image-1" required type="file" />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image-2">Image 2</Label>
-                    <Input ref={image2Ref} id="image-2" required type="file" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image-3">Image 3</Label>
-                    <Input ref={image3Ref} id="image-3" required type="file" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image-4">Image 4</Label>
-                    <Input ref={image4ref} id="image-4" required type="file" />
-                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maincontent">
+                    Additional Information / Remarks{" "}
+                  </Label>
+                  <Textarea
+                    className="min-h-[100px]"
+                    id="maincontent"
+                    placeholder="Enter blog post content"
+                    ref={maincontentRef}
+                  />
                 </div>
                 <div className="flex justify-end">
                   <Button onClick={handleFormSubmit} type="submit">

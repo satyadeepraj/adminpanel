@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import OWASPImage from '../public/loginpage/demo-banner.jpg'; // Ensure you have this image in the public directory
+import OWASPImage from '../public/loginpage/OWASPImage.jpeg'; // Ensure you have this image in the public directory
 
 const Page6 = () => {
   return (

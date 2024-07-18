@@ -29,10 +29,8 @@ export async function POST(request) {
   const author = JSON.parse(formData.get("author"));
 
   const image1 = formData.get("image1");
-  const image2 = formData.get("image2");
-  const image3 = formData.get("image3");
-  const image4 = formData.get("image4");
-  const imageFiles = [image1, image2, image3, image4].filter(Boolean);
+ 
+  const imageFiles = [image1].filter(Boolean);
 
   const sections = [];
 

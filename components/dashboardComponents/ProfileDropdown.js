@@ -12,6 +12,7 @@ import Link from "next/link";
 import Signout from "../UserComponent/Signout";
 
 
+
 const ProfileDropdown = ({ user }) => {
   return (
     <>
@@ -24,7 +25,7 @@ const ProfileDropdown = ({ user }) => {
           </div>
           
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="bg-white">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>

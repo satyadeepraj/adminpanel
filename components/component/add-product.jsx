@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import Loader from "../UserComponent/Loader";
 
+
 export function AddProduct() {
   const companyNameRef = useRef();
   const projectNameRef = useRef();
@@ -29,9 +30,9 @@ export function AddProduct() {
   const endDateRef = useRef();
 
   const image1Ref = useRef();
-  const image2Ref = useRef();
-  const image3Ref = useRef();
-  const image4Ref = useRef();
+  // const image2Ref = useRef();
+  // const image3Ref = useRef();
+  // const image4Ref = useRef();
 
   const [loading, setLoading] = useState(false);
   const handleFormSubmit = async () => {
@@ -47,15 +48,15 @@ export function AddProduct() {
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
     }
-    if (image2Ref.current.files[0]) {
-      formData.append("image2", image2Ref.current.files[0]);
-    }
-    if (image3Ref.current.files[0]) {
-      formData.append("image3", image3Ref.current.files[0]);
-    }
-    if (image4Ref.current.files[0]) {
-      formData.append("image4", image4Ref.current.files[0]);
-    }
+    // if (image2Ref.current.files[0]) {
+    //   formData.append("image2", image2Ref.current.files[0]);
+    // }
+    // if (image3Ref.current.files[0]) {
+    //   formData.append("image3", image3Ref.current.files[0]);
+    // }
+    // if (image4Ref.current.files[0]) {
+    //   formData.append("image4", image4Ref.current.files[0]);
+    // }
 
     try {
       setLoading(true);
@@ -139,8 +140,8 @@ export function AddProduct() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="type">Type</Label>
-          <Input id="type" placeholder="Enter type" ref={typeRef} />
+          <Label htmlFor="type">Document Type</Label>
+          <Input id="type" placeholder="Enter Document type" ref={typeRef} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="startDate">Start Date</Label>
@@ -153,21 +154,10 @@ export function AddProduct() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="image-1">Image 1</Label>
+            <Label htmlFor="image-1">Company Logo</Label>
             <Input ref={image1Ref} id="image-1" type="file" />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="image-2">Image 2</Label>
-            <Input ref={image2Ref} id="image-2" type="file" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="image-3">Image 3</Label>
-            <Input ref={image3Ref} id="image-3" type="file" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="image-4">Image 4</Label>
-            <Input ref={image4Ref} id="image-4" type="file" />
-          </div>
+      
         </div>
         <DialogFooter>
           <Button onClick={handleFormSubmit} type="submit">

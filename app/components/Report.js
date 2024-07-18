@@ -11,6 +11,7 @@ import Page7 from "@/components/Page7";
 import Page10 from "@/components/Page10";
 import Page11 from "@/components/Page11";
 
+import Page13 from "@/components/Page13";
 
 const Report = () => {
   const { blogData } = useData();
@@ -21,17 +22,19 @@ const Report = () => {
 
   return (
     <div className="report">
+      <Page1 />
+      <Page2 />
+      <Page3 />
+      <Page4 />
+      <Page5 />
+      <Page6 />
+      <Page7 />
+      <Page8 />
+      <Page10 />
+      <Page11 />
+     
+      <Page13/>
     
-        <Page1 />
-        <Page2 />
-        <Page3 />
-        <Page4 />
-        <Page5 />
-        <Page6/>
-        <Page7/>
-      <Page8/>
-      <Page10/>
-      <Page11/>
     </div>
   );
 };

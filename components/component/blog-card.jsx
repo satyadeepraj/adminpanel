@@ -9,30 +9,53 @@ import {
 import { Button } from "../ui/button";
 
 export function BlogCard(props) {
-  const { author } = props;
+  const { author,status } = props;
+  const getSeverityBgColor = (status) => {
+    switch (status) {
+      case "Open":
+        return "bg-[#90EE90]"; /* LightGreen */
+      case "PendingForReview":
+        return "bg-yellow-500"; /* LightYellow */
+      case "PendingForApproval":
+        return "bg-[#8B0000]"; /* LightCoral */
+      case "Closed":
+        return "bg-green-500"; /* LightGray */
+      default:
+        return "";
+    }
+  };
   return (
-    <Card className="w-full  m-12 max-w-sm">
+    <Card className="w-1/4  m-12 max-w-sm">
       <div className="group relative overflow-hidden rounded-lg shadow-lg transition-all hover:shadow-xl">
         <CardHeader>
-          <Link className="absolute inset-0 z-10" href={`/blogdetails/${props.id}`}>
+          <Link
+            className="absolute inset-0 z-10"
+            href={`/blogdetails/${props.id}`}
+          >
             <span className="sr-only">View post</span>
           </Link>
           <img
             alt="Blog post image"
-            className="h-80  w-full object-cover transition-all group-hover:scale-110 rounded-2xl"
-            height={800}
+            className="h-40  w-full object-cover transition-all group-hover:scale-110 rounded-2xl"
+            height={400}
             src={props.image}
             style={{
-              aspectRatio: "600/800",
+              aspectRatio: "200/400",
               objectFit: "cover",
             }}
-            width={600}
+            width={200}
           />
         </CardHeader>
-        <div className="space-y-2 p-4">
+        <div className=" p-4">
           <CardContent className="-mt-2">
             <h3 className="text-xl font-semibold">{props.maintitle}</h3>
-            <p className="text-gray-500 line-clamp-2">{props.maincontent}</p>
+            <p
+             className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap ${getSeverityBgColor(
+              status
+            )}`}
+            >
+              {status}
+            </p>
           </CardContent>
           <CardFooter>
             <div className="flex items-center justify-between ">
@@ -45,7 +68,7 @@ export function BlogCard(props) {
             </div>
             <div className="ml-[80px]">
               {" "}
-              <Button >view more</Button>
+              <Button>view more</Button>
             </div>
           </CardFooter>
         </div>

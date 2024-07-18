@@ -24,6 +24,9 @@ import axios from "axios";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BlogCard } from "./blog-card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 const Reportable = () => {
   const router = useRouter();
@@ -32,10 +35,16 @@ const Reportable = () => {
   const params = useParams();
   const { id } = params;
   const [searchQuery, setSearchQuery] = useState("");
-
+  const options = { month: "long", day: "numeric", year: "numeric" };
   const [startDate, setStartDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 2;
+  const productsPerPage = 10;
+  const [isTableView, setIsTableView] = useState(true);
+
+  const handleToggleView = () => {
+    setIsTableView(!isTableView);
+  };
+
   console.log(productData && productData);
 
   useEffect(() => {
@@ -123,9 +132,7 @@ const Reportable = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-2 shrink-0 sm:flex-row">
-                <div>
-                  
-                </div>
+                <div></div>
                 <div className="w-full md:w-72">
                   <div className="relative h-10 w-full min-w-[200px]">
                     <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center text-blue-gray-500">
@@ -203,7 +210,16 @@ const Reportable = () => {
                   </ul>
                 </nav>
               </div>
-              <div className="">
+              <div className="flex">
+                <div className="flex items-center space-x-2 mb-4">
+                <Label htmlFor="toggle-view">Card</Label>
+                  <Switch
+                    id="toggle-view"
+                    checked={isTableView}
+                    onCheckedChange={handleToggleView}
+                  />
+                  <Label htmlFor="toggle-view">Table</Label>
+                </div>
                 <div className="px-2">
                   <label></label>
                   <DatePicker
@@ -217,6 +233,7 @@ const Reportable = () => {
               </div>
             </div>
           </div>
+          {isTableView ? (
           <div className="p-6 px-0 overflow-scroll">
             <table className="w-full mt-4 text-left table-auto min-w-max">
               <thead>
@@ -397,7 +414,26 @@ const Reportable = () => {
                 )}
               </tbody>
             </table>
-          </div>
+          </div>):(
+          <div className="flex flex-row">
+            {currentReports.map((e) => {
+              const formattedDateOfReport = new Intl.DateTimeFormat(
+                "en-US",
+                options
+              ).format(new Date(e.blogId.dateOfReport));
+              return (
+                <BlogCard
+                  key={e.blogId._id}
+                  id={e.blogId._id}
+                  maintitle={e.blogId.maintitle}
+                  status={e.blogId.status}
+                  dateOfReport={formattedDateOfReport}
+                  author={e.blogId.author}
+                  image={e.blogId.images[0]}
+                />
+              );
+            })}
+          </div>)}
           <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
               Page {currentPage} of {totalPages}
