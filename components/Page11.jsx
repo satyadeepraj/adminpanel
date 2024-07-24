@@ -50,7 +50,8 @@ const Page11 = () => {
       </h2>
       {User.sections && User.sections.length > 0 ? (
         User.sections.map((section, index) => {
-          const staticVulnerabilityData = staticData[section.vulnerability] || {};
+          const staticVulnerabilityData =
+            staticData[section.vulnerability] || {};
           return (
             <div key={index} className="page-break-after">
               <h2 className="text-2xl font-bold text-blue-600 py-4 ml-4">
@@ -63,7 +64,10 @@ const Page11 = () => {
                       Affected URL<span className="">:</span>
                     </td>
                     <td className="px-4 py-2">
-                      <a href="http://www.samplereport.com" className="text-blue-600">
+                      <a
+                        href="http://www.samplereport.com"
+                        className="text-blue-600"
+                      >
                         {User.email || "www.samplereport.com"}
                       </a>
                     </td>
@@ -74,7 +78,9 @@ const Page11 = () => {
                     </td>
                     <td className="px-4 py-2 ">
                       <span
-                        className={`${getSeverityBgColor(section.severity)} border-2 border-black text-white font-bold px-2 pb-4 rounded`}
+                        className={`${getSeverityBgColor(
+                          section.severity
+                        )} border-2 border-black text-white font-bold px-2 pb-4 rounded`}
                       >
                         {section.severity}
                       </span>
@@ -85,7 +91,8 @@ const Page11 = () => {
                       Description<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.description || "No description available."}
+                      {staticVulnerabilityData.description ||
+                        "No description available."}
                     </td>
                   </tr>
                   <tr>
@@ -93,7 +100,8 @@ const Page11 = () => {
                       Impact<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.impact || "No impact information available."}
+                      {staticVulnerabilityData.impact ||
+                        "No impact information available."}
                     </td>
                   </tr>
                   <tr>
@@ -101,7 +109,8 @@ const Page11 = () => {
                       Recommendation<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.recommendation || "No recommendation available."}
+                      {staticVulnerabilityData.recommendation ||
+                        "No recommendation available."}
                     </td>
                   </tr>
                   <tr>
@@ -109,7 +118,9 @@ const Page11 = () => {
                       Reference<span>:</span>
                     </td>
                     <td className="px-4 py-2">
-                      <p className="mb-2">Note:- Fix it throughout the application.</p>
+                      <p className="mb-2">
+                        Note:- Fix it throughout the application.
+                      </p>
                       {section.images && section.images.length > 0 ? (
                         <div className="grid grid-cols-2 gap-4">
                           {section.images.map((item, index) => (

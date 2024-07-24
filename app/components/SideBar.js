@@ -167,8 +167,8 @@ const SideBar = () => {
         </div>
       </div>
       <div className="flex-grow"></div>
-      <div className=" ">
-        <p className="text-base font-semibold text-center text-black">
+      <div className="mb-6">
+        <p className="text-base font-semibold text-center text-black py-2">
           Powered By:
         </p>
         <Image

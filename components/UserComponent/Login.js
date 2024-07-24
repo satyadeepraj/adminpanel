@@ -29,6 +29,7 @@ const FormSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
+  loginType: z.enum(["user", "product"]),
 });
 
 export function Login() {
@@ -41,6 +42,7 @@ export function Login() {
     defaultValues: {
       email: "",
       password: "",
+      loginType: "user",
     },
   });
 
@@ -49,28 +51,40 @@ export function Login() {
     toast.promise(
       async function () {
         try {
-          const response = await signIn("credentials", {
+          const provider =
+            data.loginType === "user" ? "credentials" : "product-credentials";
+          const response = await signIn(provider, {
             email: data.email.toLowerCase(),
             password: data.password,
             redirect: false,
           });
           await revalidation();
-          return response;
+          if (!response?.error) {
+            if (data.loginType === "user") {
+              router.push("/");
+            } else if (data.loginType === "product") {
+              // Fetch the current product data
+              const res = await fetch("/api");
+              const result = await res.json();
+              if (result.currentProduct) {
+                const { _id } = result.currentProduct;
+                // Store _id in state or session for later use
+                router.push(`/client/project/${_id}`);
+              }
+            }
+            return "Login successfully";
+          } else {
+            throw new Error(response.error || "Invalid email or password!");
+          }
         } catch (error) {
           setLoading(false);
-          throw error;
+          throw error.message || "An unknown error occurred!";
         }
       },
       {
         loading: "Trying to login...",
-        success: () => {
-          router.push("/");
-          return "Login successfully";
-        },
-        error: () => {
-          setLoading(false);
-          return "Invalid email or password!"; // Ensure there's a return statement for consistency
-        },
+        success: (msg) => msg,
+        error: (msg) => msg,
       }
     );
   };
@@ -84,15 +98,15 @@ export function Login() {
         <div className="flex  flex-col items-center justify-center mb-[40px] ">
           <Image
             alt="Image"
-            className="w-[270px] h-[128px] mobile:w-[197px] mobile:h-[76px]  rounded-lg overflow-hidden object-cover object-center"
-            height="150"
+            className="w-[300px] h-[110px] mobile:w-[197px] mobile:h-[76px]  rounded-lg overflow-hidden object-cover object-center"
+            height="120"
             src="/loginpage/logo.png"
             width="300"
           />
-          <div className="w-[181px] h-[88px] mobile:w-[107px] mobile:h-[52px]">
+          <div className="w-[206px] h-[88px] mobile:w-[107px] mobile:h-[52px]">
             <h1 className="font-bold text-[48px] mobile:text-3xl"></h1>
-            <h2 className="font-semibold text-2xl mobile:text-lg text-opacity-65 text-gray-500 mobile:tracking-[4px] tracking-[11px] ml-2">
-              Manthan
+            <h2 className="font-semibold text-2xl  mobile:text-lg text-opacity-65 text-gray-500 mobile:tracking-[4px] tracking-[9px] ">
+              Dashboard
             </h2>
           </div>
         </div>
@@ -110,6 +124,23 @@ export function Login() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
+              <FormField
+                control={form.control}
+                name="loginType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Login As</FormLabel>
+                    <FormControl>
+                      <select {...field} className="bg-[#F5F5F5] w-full">
+                        <option value="user">Admin</option>
+                        <option value="product">Client</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="email"
@@ -202,6 +233,23 @@ export function Login() {
           >
             <FormField
               control={form.control}
+              name="loginType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Login As</FormLabel>
+                  <FormControl>
+                    <select {...field} className="bg-[#F5F5F5] w-full">
+                      <option value="user">User</option>
+                      <option value="product">Product</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -261,10 +309,7 @@ export function Login() {
               </Link>
             </div>
             {!loading ? (
-              <Button
-                type="submit"
-                className="text-white bg-red-400 w-full "
-              >
+              <Button type="submit" className="text-white bg-red-400 w-full ">
                 Login
               </Button>
             ) : (

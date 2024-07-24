@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Loader from "../UserComponent/Loader";
-
+import { EyeIcon, EyeOff, } from "lucide-react";
 
 export function AddProduct() {
   const companyNameRef = useRef();
@@ -28,14 +28,46 @@ export function AddProduct() {
   const typeRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
   const image1Ref = useRef();
   // const image2Ref = useRef();
   // const image3Ref = useRef();
   // const image4Ref = useRef();
-
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validateForm = () => {
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+
+    if (!email) {
+      toast.error("Email is required.");
+      return false;
+    }
+
+    if (!password) {
+      toast.error("Password is required.");
+      return false;
+    }
+
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFormSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
     const formData = new FormData();
 
     formData.append("companyName", companyNameRef.current.value);
@@ -44,6 +76,8 @@ export function AddProduct() {
     formData.append("type", typeRef.current.value);
     formData.append("startDate", startDateRef.current.value);
     formData.append("endDate", endDateRef.current.value);
+    formData.append("email", emailRef.current.value);
+    formData.append("password", passwordRef.current.value);
 
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
@@ -79,8 +113,6 @@ export function AddProduct() {
     }
   };
 
- 
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -102,11 +134,11 @@ export function AddProduct() {
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[625px] sm:max-h-[600px] overflow-y-auto">
+      <DialogContent className="max-w-full max-h-full sm:max-w-[625px] sm:max-h-[600px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add a New Product</DialogTitle>
+          <DialogTitle>Add a New Project</DialogTitle>
           <DialogDescription>
-            Fill out the form below to add a new product.
+            Fill out the form below to add a new project.
           </DialogDescription>
         </DialogHeader>
         {loading ? (
@@ -115,56 +147,94 @@ export function AddProduct() {
           </div>
         ) : (
           <>
-        <div className="space-y-2">
-          <Label htmlFor="companyName">Company Name</Label>
-          <Input
-            id="companyName"
-            placeholder="Enter company name"
-            ref={companyNameRef}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="projectName">Project Name</Label>
-          <Input
-            id="projectName"
-            placeholder="Enter project name"
-            ref={projectNameRef}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="scopeUrl">Scope URL</Label>
-          <Input
-            id="scopeUrl"
-            placeholder="Enter scope URL"
-            ref={scopeUrlRef}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="type">Document Type</Label>
-          <Input id="type" placeholder="Enter Document type" ref={typeRef} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="startDate">Start Date</Label>
-          <Input id="startDate" type="date" ref={startDateRef} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="endDate">End Date</Label>
-          <Input id="endDate" type="date" ref={endDateRef} />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Company Name</Label>
+              <Input
+                id="companyName"
+                placeholder="Enter company name"
+                ref={companyNameRef}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Company Email</Label>
+              <Input
+                id="companyEmail"
+                placeholder="Enter company email"
+                type="email"
+                ref={emailRef}
+                required
+                className="bg-[#F5F5F5]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Company Password</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="companyPassword"
+                  placeholder="Enter company password"
+                  type={showPassword ? "text" : "password"}
+                  ref={passwordRef}
+                  required
+                  className="bg-[#F5F5F5]"
+                />
+                <button type="button" onClick={togglePasswordVisibility}>
+                  {showPassword ? (
+                    <EyeIcon className="h-6 w-6 " />
+                  ) : (
+                    <EyeOff className="h-6 w-6 " />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="projectName">Project Name</Label>
+              <Input
+                id="projectName"
+                placeholder="Enter project name"
+                ref={projectNameRef}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="scopeUrl">Scope URL</Label>
+              <Input
+                id="scopeUrl"
+                placeholder="Enter scope URL"
+                ref={scopeUrlRef}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="type">Document Type</Label>
+              <Input
+                id="type"
+                placeholder="Enter Document type"
+                ref={typeRef}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input id="startDate" type="date" ref={startDateRef} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input id="endDate" type="date" ref={endDateRef} />
+            </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="image-1">Company Logo</Label>
-            <Input ref={image1Ref} id="image-1" type="file" />
-          </div>
-      
-        </div>
-        <DialogFooter>
-          <Button onClick={handleFormSubmit} type="submit">
-            Add Product
-          </Button>
-        </DialogFooter>
-        </>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="image-1">Company Logo</Label>
+                <Input ref={image1Ref} id="image-1" type="file" />
+              </div>
+            </div>
+            <DialogFooter>
+              <button
+                className="flex select-none items-center gap-3 rounded-full bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                onClick={handleFormSubmit}
+                type="submit"
+              >
+                Add Project
+              </button>
+            </DialogFooter>
+          </>
         )}
       </DialogContent>
     </Dialog>

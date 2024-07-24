@@ -29,7 +29,7 @@ const Page13 = () => {
   }
 
   return (
-    <div className="page-break-after p-2  ">
+    <div className="p-2  ">
 
         <div className="mb-8">
           <h2 className="text-xl text-blue-500 font-semibold">8.0 Conclusion</h2>

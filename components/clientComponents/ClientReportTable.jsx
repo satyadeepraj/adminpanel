@@ -1,13 +1,12 @@
 "use client";
-import Header from "@/app/components/Header";
-import SideBar from "@/app/components/SideBar";
+
+
 import { useData } from "@/context/DataContext";
 import DeleteIcon from "../../public/DeleteIcon.gif";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { AddProduct } from "./add-product";
-import { AddBlog } from "./add-blog";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,11 +23,13 @@ import axios from "axios";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { BlogCard } from "./blog-card";
+
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { BlogCard } from "../component/blog-card";
+import ClientHeader from "./ClientHeader";
 
-const Reportable = () => {
+const ClientReportTable = () => {
   const router = useRouter();
   const { productData } = useData();
   const [reports, setReports] = useState([]);
@@ -114,13 +115,11 @@ const Reportable = () => {
     }
   };
   return (
-    <div className=" min-h-screen w-full bg-[#F1F1F1]">
-      <Header />
-      <div className="flex bg-[#F1F1F1] flex-col sm:flex-row   max-w-full min-h-screen">
-        <div className="w-[25%] mobile:hidden">
-          <SideBar />
-        </div>
-        <div className="p-7 w-[100%] mobile:w-[100%]  mt-12 flex flex-col  text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
+    <div className="bg-blue-400">
+      <ClientHeader className="" />
+      <div className="">
+       
+        <div className="p-7 w-[100%] mobile:w-[100%]   flex flex-col  text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
           <div className=" mx-4 mt-4 overflow-hidden text-gray-700 bg-white rounded-none bg-clip-border">
             <div className="flex items-center justify-between gap-8 mb-8">
               <div>
@@ -169,7 +168,7 @@ const Reportable = () => {
                 >
                   view all
                 </button>
-                <AddBlog />
+                
               </div>
             </div>
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -318,26 +317,10 @@ const Reportable = () => {
                         </p>
                       </td>
                       <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
-                        <Link
-                          href={`/editReports/${product.blogId._id}`}
-                          className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                          type="button"
-                        >
-                          <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              aria-hidden="true"
-                              className="w-4 h-4"
-                            >
-                              <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
-                            </svg>
-                          </span>
-                        </Link>
+                      
                         <Link
                           classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
-                          href={`/blogdetails/${product.blogId._id}`}
+                          href={`/client-report-details/${product.blogId._id}`}
                           type="button"
                           className="block"
                           data-hs-overlay="#hs-ai-invoice-modal"
@@ -359,43 +342,7 @@ const Reportable = () => {
                             </span>
                           </span>
                         </Link>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <button>
-                              <Image
-                                src={DeleteIcon}
-                                width={30}
-                                height={20}
-                                className="ml-2"
-                              ></Image>
-                            </button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your Product and remove data
-                                from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() =>
-                                  handleDeleteProduct(
-                                    product._id,
-                                    product.blogId._id
-                                  )
-                                }
-                              >
-                                Continue
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                       
                       </td>
                       {/* <td className="size-px whitespace-nowrap">
                   <button type="button" className="block" data-hs-overlay="#hs-ai-invoice-modal">
@@ -494,4 +441,4 @@ const Reportable = () => {
   );
 };
 
-export default Reportable;
+export default ClientReportTable;

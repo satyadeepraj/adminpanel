@@ -232,7 +232,7 @@ const Projectable = () => {
                         Sort
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent className="bg-white">
                       <DropdownMenuLabel>My Projects</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>

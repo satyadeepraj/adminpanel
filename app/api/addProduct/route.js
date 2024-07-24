@@ -24,6 +24,8 @@ export async function POST(request) {
   const type = formData.get("type");
   const startDate = new Date(formData.get("startDate"));
   const endDate = new Date(formData.get("endDate"));
+  const email= formData.get("email");
+  const password=formData.get("password")
   
 
 
@@ -52,6 +54,8 @@ export async function POST(request) {
       type,
       startDate,
       endDate,
+      email,
+      password,
       images: cloudinaryUrls || [],
      
     });

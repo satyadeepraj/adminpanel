@@ -6,13 +6,12 @@ module.exports = {
     "./components/**/*.{js,jsx}",
     "./app/**/*.{js,jsx}",
     "./src/**/*.{js,jsx}",
-    "node_modules/preline/dist/*.js"
   ],
   prefix: "",
   theme: {
     screens: {
-      'mobile': {'max': '1023px'},
-     sm: "640px", 
+      mobile: { max: "1023px" },
+      sm: "640px",
       // => @media (min-width: 640px) { ... }
 
       md: "768px",
@@ -30,51 +29,51 @@ module.exports = {
     container: {
       center: true,
       padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
     },
     extend: {
       colors: {
-        whitesmoke: {
-          100: "#f8f9fa",
-          200: "#eee",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
-        "base-color-white": "#fff",
-        "gray-500": "#8b96a5",
-        dark: "#1c1c1c",
-        gray1: "#151515",
-        "base-color-gray-800": "#606060",
-        "gray-200": "#eff2f4",
-        "gray-300": "#dee2e7",
-        "gray-600": "#505050",
-        "base-color-gray-200": "#e0e0e0",
-        gainsboro: {
-          100: "#e0e7e9",
-          200: "#dbdbdb",
-          300: "#d9d9d9",
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        f9a31b: "#f9a31b",
-        orange: "#ff9017",
-        cornflowerblue: "#008ede",
-        "base-color-green": "#00b517",
-        "base-color-gray-500": "#787a80",
-        "base-color-gray-300": "#bdc1c8",
-        tomato: "#fa3434",
-        cadetblue: "rgba(76, 167, 167, 0.6)",
-        paleturquoise: "#c6f3f1",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
-      fontFamily: {
-        "text-normal": "Inter",
-        "title-h5": "Inter",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
-      fontSize: {
-        base: "16px",
-        xs: "12px",
-        "5xl": "24px",
-        xl: "20px",
-        smi: "13px",
-        lg: "18px",
-        inherit: "inherit",
-      },
-
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -90,9 +89,6 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
-    corePlugins: {
-      preflight: false,
-    },
   },
-  plugins: [require("tailwindcss-animate"),require('preline/plugin')],
+  plugins: [require("tailwindcss-animate")],
 };

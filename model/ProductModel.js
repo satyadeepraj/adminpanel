@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import BlogPost from "./BlogModel";
-
+import bcrypt from "bcrypt";
 // Product Schema
 const productSchema = new mongoose.Schema({
   companyName: {
@@ -29,7 +29,26 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "BlogPost",
   }}],
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
+// Hash the password before saving the product document
+productSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
 
 const Product =
   mongoose.models.Product || mongoose.model("Product", productSchema);

@@ -30,7 +30,7 @@ const Header = () => {
       </Sheet>
       <div className="flex gap-2 items-center  ">
         <a className="" href="#" aria-label="Brand">
-          <Image width={100} src={image} alt="User" className="w-54 h-24" />
+          <Image width={100} src={image} alt="User" className="w-[100px] h-28" />
         </a>
         {user && (
           <p className='hidden sm:block'>

@@ -102,15 +102,15 @@ export function Register() {
         <div className="flex flex-col items-center justify-center mb-[40px]">
           <Image
             alt="Image"
-            className="w-[270px] h-[128px] mobile:w-[197px] mobile:h-[76px]  rounded-lg overflow-hidden object-cover object-center"
+            className="w-[300px] h-[110px] mobile:w-[197px] mobile:h-[76px]  rounded-lg overflow-hidden object-cover object-center"
             height="150"
             src="/loginpage/logo.png"
             width="300"
           />
-          <div className="w-[181px] h-[88px] mobile:w-[107px] mobile:h-[52px]">
+        <div className="w-[206px] h-[88px] mobile:w-[107px] mobile:h-[52px]">
             <h1 className="font-bold text-[48px] mobile:text-3xl"></h1>
-            <h2 className="font-semibold text-2xl  mobile:text-lg text-opacity-65 text-gray-500 mobile:tracking-[4px] tracking-[11px] ml-2">
-              Manthan
+            <h2 className="font-semibold text-2xl  mobile:text-lg text-opacity-65 text-gray-500 mobile:tracking-[4px] tracking-[9px] ">
+              Dashboard
             </h2>
           </div>
         </div>

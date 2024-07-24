@@ -84,8 +84,7 @@ export function AddBlog() {
     "Weak Password Policy",
     "Another Domain Open In Same Tab",
     "Referer Policy Not Implemented",
-];
-
+  ];
 
   const handleFormSubmit = async () => {
     const formData = new FormData();
@@ -482,9 +481,13 @@ export function AddBlog() {
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={handleFormSubmit} type="submit">
-                    Publish
-                  </Button>
+                  <button
+                    className="flex select-none items-center gap-3 rounded-full bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    onClick={handleFormSubmit}
+                    type="submit"
+                  >
+                    Publish Report
+                  </button>
                 </div>
               </div>
             </div>
