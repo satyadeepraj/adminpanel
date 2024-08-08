@@ -6,6 +6,8 @@ import cloudinary from "cloudinary";
 import Product from "@/model/ProductModel";
 import { authOptions } from "@/lib/auth";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -14,12 +16,12 @@ cloudinary.config({
 
 export const dynamic = "force-dynamic";
 
-export async function PUT(request,{ params }) {
+export async function PUT(request, { params }) {
   await connectToDatabase();
   const parser = new DatauriParser();
   const formData = await request.formData();
 
-  const productId = params.id // Assuming you send productId in the request
+  const productId = params.id; // Assuming you send productId in the request
 
   // Retrieve updated data from form
   const companyName = formData.get("companyName");
@@ -28,8 +30,8 @@ export async function PUT(request,{ params }) {
   const type = formData.get("type");
   const startDate = new Date(formData.get("startDate"));
   const endDate = new Date(formData.get("endDate"));
-
- 
+  const email = formData.get("email");
+  const password = formData.get("password");
 
   const image1 = formData.get("image1");
   const image2 = formData.get("image2");
@@ -50,19 +52,25 @@ export async function PUT(request,{ params }) {
 
     const cloudinaryUrls = await Promise.all(uploadPromises);
 
+    const updateData = {
+      companyName,
+      projectName,
+      scopeUrl,
+      type,
+      startDate,
+      endDate,
+      email,
+      images: cloudinaryUrls || [],
+    }
+    // Update password if provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
     // Find the existing product by productId and update it
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      {
-        companyName,
-        projectName,
-        scopeUrl,
-        type,
-        startDate,
-        endDate,
-        images: cloudinaryUrls || [],
-       
-      },
+      updateData,
       { new: true }
     );
 

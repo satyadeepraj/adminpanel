@@ -5,8 +5,9 @@ import { Loader } from "@/components/component/loader";
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-const Page1 = () => {
+const Page1 = ({ pageNumber,totalPages }) => {
   const { id } = useParams();
   const { blogData } = useData();
   const options = { month: "long", day: "numeric", year: "numeric" };
@@ -54,9 +55,19 @@ const Page1 = () => {
         {new Date(User.dateOfReport).toLocaleDateString("en-GB", options)}
       </p>
       <p className="text-xl font-bold">A2DGC (P) Ltd.</p>
-      <div className="pt-[350px] text-center">
-        <p className="text-sm text-gray-600"></p>
-        <p className="text-sm text-gray-600"></p>
+      <div className="pt-[210px] text-center">
+        <p className="text-sm text-black">
+          Khasra No 187, Near Mahaveer Bhawan, Rithala, Pocket-11,{" "}
+        </p>
+        <p className="text-sm text-black">
+          Sector 5, Rohini, New Delhi, Delhi 110085
+        </p>
+        <p className="text-sm text-black">Phone Number : 011-43061583</p>
+        <Link href="https://a2dgc.com" className="text-sm text-black">https://a2dgc.com</Link>
+        <div className="mt-4 text-center">
+        <p className="text-sm text-gray-600">Confidential</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
+      </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
@@ -30,8 +30,11 @@ import {
 
 import { useParams } from "next/navigation";
 import Loader from "../UserComponent/Loader";
+import AddVulnerability from "./add-vulnerability";
+import { useData } from "@/context/DataContext";
 
 export function AddBlog() {
+  const { vulnerabilityData } = useData();
   const maintitleRef = useRef();
   const emailRef = useRef();
   const documentypeRef = useRef();
@@ -200,9 +203,20 @@ export function AddBlog() {
   const [filteredVulnerabilities, setFilteredVulnerabilities] =
     useState(vulnerabilities);
 
+  // Initialize the filtered vulnerabilities list
+  useEffect(() => {
+    setFilteredVulnerabilities([
+      ...vulnerabilities,
+      ...vulnerabilityData.map((item) => item.vulnerabilityName),
+    ]);
+  }, [vulnerabilityData]);
+
   const handleInputChange = (index, value) => {
     handleSectionChange(index, "vulnerability", value);
-    const newFilteredVulnerabilities = vulnerabilities.filter((vulnerability) =>
+    const newFilteredVulnerabilities = [
+      ...vulnerabilities,
+      ...vulnerabilityData.map((item) => item.vulnerabilityName),
+    ].filter((vulnerability) =>
       vulnerability.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredVulnerabilities(newFilteredVulnerabilities);
@@ -480,7 +494,8 @@ export function AddBlog() {
                     ref={maincontentRef}
                   />
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-between">
+                  <AddVulnerability />
                   <button
                     className="flex select-none items-center gap-3 rounded-full bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     onClick={handleFormSubmit}

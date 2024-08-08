@@ -13,7 +13,7 @@ import {
   Table,
 } from "@/components/ui/table";
 
-const Page3 = () => {
+const Page3 = ({ pageNumber,totalPages }) => {
   const { id } = useParams();
   const { blogData } = useData();
 
@@ -143,6 +143,10 @@ const Page3 = () => {
           </TableRow>
         </TableBody>
       </Table>
+      <div className="mt-[250px] text-center">
+        <p className="text-sm text-gray-600">Confidential</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
+      </div>
     </div>
   );
 };

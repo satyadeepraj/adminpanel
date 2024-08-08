@@ -7,6 +7,7 @@ import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
+
 import {
   Dialog,
   DialogContent,
@@ -17,25 +18,28 @@ import {
 } from "@/components/ui/dialog";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import Loader from "@/components/UserComponent/Loader";
-
-
 
 export function EditProject() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedImage1, setSelectedImage1] = useState(null);
-  const { productData } = useData();
+  const { productData, setIsEditing } = useData();
   const params = useParams();
   const { id } = params;
-  
+  const router = useRouter();
+
   useEffect(() => {
+    setIsEditing(true);
     if (productData) {
       setProduct(productData.find((e) => e._id == id));
     }
-  }, [productData, id]);
+    return () => {
+      setIsEditing(false); // Disable edit mode when component unmounts
+    };
+  }, [productData, id, setIsEditing]);
 
   const companyNameRef = useRef();
   const projectNameRef = useRef();
@@ -43,6 +47,8 @@ export function EditProject() {
   const typeRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
   const image1Ref = useRef();
   // const image2Ref = useRef();
   // const image3Ref = useRef();
@@ -57,10 +63,18 @@ export function EditProject() {
     formData.append("type", typeRef.current.value);
     formData.append("startDate", startDateRef.current.value);
     formData.append("endDate", endDateRef.current.value);
+    formData.append("email", emailRef.current.value);
+    formData.append("password", passwordRef.current.value);
 
+          // Only append a new image if one is selected
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
+    } else {
+      formData.append("existingImage1", product.images[0]);
     }
+
+
+    
     // if (image2Ref.current.files[0]) {
     //   formData.append("image2", image2Ref.current.files[0]);
     // }
@@ -70,7 +84,7 @@ export function EditProject() {
     // if (image4Ref.current.files[0]) {
     //   formData.append("image4", image4Ref.current.files[0]);
     // }
-             
+
     try {
       setLoading(true);
       const response = await axios.put(`/api/product/${id}`, formData, {
@@ -85,9 +99,10 @@ export function EditProject() {
           prod._id === id ? updatedProduct : prod
         );
         setProduct(updatedProductData);
-        alert("Product added successfully!");
+        alert("Product updated successfully!");
         // Reset selected image state
         setSelectedImage1(null);
+        router.push(`/addProducts`);
       } else {
         toast.error(response.data.message || "Failed to update product.");
       }
@@ -96,11 +111,18 @@ export function EditProject() {
       toast.error("Failed to update product. Please try again.");
     } finally {
       setLoading(false);
+      setIsEditing(false);
     }
   };
+  
   const handleImage1Change = (e) => {
-    setSelectedImage1(URL.createObjectURL(e.target.files[0]));
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage1(URL.createObjectURL(e.target.files[0]));
+    } else {
+      setSelectedImage1(null); // If no file is selected, reset the selected image
+    }
   };
+
   if (loading) {
     return (
       <div>
@@ -122,6 +144,26 @@ export function EditProject() {
           placeholder="Enter company name"
           ref={companyNameRef}
           defaultValue={product.companyName || ""}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Company Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Enter email"
+          ref={emailRef}
+          defaultValue={product.email || ""}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Company Password</Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Enter password"
+          ref={passwordRef}
+          defaultValue={product.password || ""}
         />
       </div>
       <div className="space-y-2">

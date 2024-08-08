@@ -5,9 +5,9 @@ import { Loader } from "@/components/component/loader";
 import staticData from "./StaticData";
 import React from "react";
 
-const Page11 = () => {
+const Page11 = ({ pageNumber, totalPages }) => {
   const { id } = useParams();
-  const { blogData } = useData();
+  const { blogData, vulnerabilityData } = useData();
 
   let User = null;
 
@@ -33,7 +33,7 @@ const Page11 = () => {
       case "Critical":
         return "bg-red-500";
       case "High":
-        return "bg-yellow-400";
+        return "bg-yellow-500";
       case "Medium":
         return "bg-yellow-300";
       case "Low":
@@ -42,16 +42,32 @@ const Page11 = () => {
         return "";
     }
   };
+  // Sort sections by severity order
+  const severityOrder = ["Critical", "High", "Medium", "Low"];
+  const sortedSections = (User.sections || []).sort((a, b) => {
+    return (
+      severityOrder.indexOf(a.severity) - severityOrder.indexOf(b.severity)
+    );
+  });
 
   return (
     <div className=" flex flex-col items-start p-2 bg-white shadow-md rounded-lg ">
       <h2 className="text-2xl font-bold text-blue-600 mb-4">
         7. Detailed Findings
       </h2>
-      {User.sections && User.sections.length > 0 ? (
-        User.sections.map((section, index) => {
+      {sortedSections.length > 0 ? (
+        sortedSections.map((section, index) => {
           const staticVulnerabilityData =
             staticData[section.vulnerability] || {};
+          const matchingVulnerability =
+            vulnerabilityData?.find(
+              (vul) => vul.vulnerabilityName === section.vulnerability
+            ) || {};
+          const vulnerabilityContent = matchingVulnerability.description
+            ? matchingVulnerability
+            : staticVulnerabilityData;
+          const currentPage = pageNumber + index;
+
           return (
             <div key={index} className="page-break-after">
               <h2 className="text-2xl font-bold text-blue-600 py-4 ml-4">
@@ -80,7 +96,7 @@ const Page11 = () => {
                       <span
                         className={`${getSeverityBgColor(
                           section.severity
-                        )} border-2 border-black text-white font-bold px-2 pb-4 rounded`}
+                        )} border-2 border-black text-black font-bold px-2 pb-4 rounded`}
                       >
                         {section.severity}
                       </span>
@@ -91,7 +107,7 @@ const Page11 = () => {
                       Description<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.description ||
+                      {vulnerabilityContent.description ||
                         "No description available."}
                     </td>
                   </tr>
@@ -100,7 +116,7 @@ const Page11 = () => {
                       Impact<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.impact ||
+                      {vulnerabilityContent.impact ||
                         "No impact information available."}
                     </td>
                   </tr>
@@ -109,7 +125,7 @@ const Page11 = () => {
                       Recommendation<span className="">:</span>
                     </td>
                     <td className="px-4 py-2 text-justify leading-relaxed">
-                      {staticVulnerabilityData.recommendation ||
+                      {vulnerabilityContent.recommendation ||
                         "No recommendation available."}
                     </td>
                   </tr>
@@ -140,6 +156,10 @@ const Page11 = () => {
                   </tr>
                 </tbody>
               </table>
+              <div className="text-right flex flex-col font-semibold">
+                <span>confidential</span>
+                Page {currentPage}
+              </div>
             </div>
           );
         })

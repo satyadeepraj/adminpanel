@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import OWASPImage from '../public/loginpage/OWASPImage.jpeg'; // Ensure you have this image in the public directory
 
-const Page6 = () => {
+const Page6 = ({ pageNumber,totalPages }) => {
   return (
     <div className="p-8 page">
       {/* Standards Header */}
@@ -50,7 +50,7 @@ const Page6 = () => {
       {/* Footer */}
       <div className="mt-8 text-center">
         <p className="text-sm text-gray-600">Confidential</p>
-        <p className="text-sm text-gray-600">Page 6 of 40</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
       </div>
     </div>
   );

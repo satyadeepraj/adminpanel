@@ -15,11 +15,11 @@ cloudinary.config({
 
 export const dynamic = "force-dynamic";
 
-export async function PUT(request) {
+export async function PUT(request,{ params }) {
   await connectToDatabase();
   const parser = new DatauriParser();
   const formData = await request.formData();
-  const blogId = formData.get("blogId");
+  const {blogId} = params;
   const email = formData.get("email");
   const documentype = formData.get("documentype");
   const documentversion = formData.get("documentversion");
@@ -27,6 +27,7 @@ export async function PUT(request) {
   const maintitle = formData.get("maintitle");
   const maincontent = formData.get("maincontent");
   const datePublished = new Date(formData.get("datePublished"));
+  const status = formData.get("status");
   const productId = formData.get("productId");
 
   const author = JSON.parse(formData.get("author"));
@@ -94,14 +95,28 @@ export async function PUT(request) {
     );
 
     await Promise.all(sectionUploadPromises);
+    console.log(  {
+      email,
+      documentype,
+      documentversion,
+      dateOfReport,
+      maintitle,
+      maincontent,
+      status,
+      datePublished,
+      images: cloudinaryUrls || [],
+      author,
+      sections,
+    },"line no.108api********************************",blogId);
 
-    const updatedBlog = await BlogPost.findByIdAndUpdate(
-      blogId,
+    const updatedBlog = await BlogPost.findOneAndUpdate(
+      {_id:blogId},
       {
         email,
         documentype,
         documentversion,
         dateOfReport,
+        status,
         maintitle,
         maincontent,
         datePublished,
@@ -109,9 +124,9 @@ export async function PUT(request) {
         author,
         sections,
       },
-      { new: true }
+      {upsert: true}
     );
-
+          console.log(updatedBlog,'********************************line126 api');
     return Response.json({
       status: "success",
       data: updatedBlog,

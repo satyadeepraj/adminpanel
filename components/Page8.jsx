@@ -13,7 +13,7 @@ import {
   Table,
 } from "@/components/ui/table";
 
-const Page8 = () => {
+const Page8 = ({ pageNumber,totalPages }) => {
   const { id } = useParams();
   const { blogData } = useData();
   const options = { month: "long", day: "numeric", year: "numeric" };
@@ -84,6 +84,10 @@ const Page8 = () => {
             ))}
         </TableBody>
       </Table>
+      <div className="mt-8 text-center">
+        <p className="text-sm text-gray-600">Confidential</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
+      </div>
     </div>
   );
 };

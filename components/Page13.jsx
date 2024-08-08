@@ -10,6 +10,7 @@ const Page13 = () => {
   const { blogData } = useData();
 
   let User;
+  let severitiesPresent = new Set();
 
   if (blogData && id) {
     console.log(id);
@@ -28,38 +29,53 @@ const Page13 = () => {
     return <div>User not found</div>;
   }
 
+  User.sections.forEach(section => {
+    severitiesPresent.add(section.severity);
+  });
   return (
-    <div className="p-2  ">
+    <div className="p-2 ">
+      <div className="mb-8">
+        <h2 className="text-xl text-blue-500 font-semibold">8.0 Conclusion</h2>
+        <p className="mt-2">
+          The above app tested shows vulnerabilities which include{" "}
+          <span className="font-bold">
+          {[...severitiesPresent].join(", ")} vulnerabilities
+          </span>
+          .
+        </p>
+        <p className="mt-2">
+          Hence, the{" "}
+          <span className="font-bold text-blue-500"> {User.email} </span> team
+          needs to work on strengthening its ULRs by implementing the
+          remediation actions provided above.
+        </p>
+      </div>
+      <div>
+        <h2 className="text-xl text-blue-500 font-semibold">
+          8.1 Use of Payloads and Exploitation
+        </h2>
+        <div className="mt-2">
+        <ul className=" ml-2">
+          <li>• Metasploit Payloads: Yes</li>
+          <li>• Custom exploiting payloads used: Yes</li>
+        </ul>
+        </div>
+      </div>
 
-        <div className="mb-8">
-          <h2 className="text-xl text-blue-500 font-semibold">8.0 Conclusion</h2>
-          <p className="mt-2">
-            The above app tested shows vulnerabilities which include{" "}
-            <span className="font-bold">
-              Critical, High, Medium, and Low vulnerabilities
-            </span>
-            .
-          </p>
-          <p className="mt-2">
-            Hence, the <span className="font-bold text-blue-500"> Client XXX YYY, India </span> team needs to
-            work on strengthening its ULRs by implementing the remediation
-            actions provided above.
-          </p>
+      <div>
+        <h2 className="text-xl text-blue-500 font-semibold">9.0 Tools Used</h2>
+        <div className="mt-2">
+        <ul className="  ml-2">
+          <li>• Nmap</li>
+          <li>• Metasploit</li>
+          <li>• Kali Linux tool set.</li>
+          <li>• Self-built tools & Scripts.</li>
+          <li>• Burpsuite</li>
+          <li>• Accuntix</li>
+        </ul>
         </div>
-        <div>
-          <h2 className="text-xl text-blue-500 font-semibold">
-            9.0 Use of Payloads and Exploitation
-          </h2>
-          <ul className="list-disc list-inside mt-2">
-            <li>
-            Metasploit Payloads: Yes 
-            </li>
-            <li>
-            	Custom exploiting payloads used: Yes 
-            </li>
-          </ul>
-        </div>
-   
+       
+      </div>
     </div>
   );
 };

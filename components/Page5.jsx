@@ -1,9 +1,36 @@
-// pages/report.js
-
+"use client";
+import { useParams } from "next/navigation";
+import { useData } from "@/context/DataContext";
+import { Loader } from "@/components/component/loader";
 import Image from 'next/image';
-import MethodologyImage from '../public/loginpage/demo-banner.jpg'; // Ensure you have this image in the public directory
+import MethodologyImage from '../public/loginpage/Methodology.jpeg'; // Ensure you have this image in the public directory
 
-const Page5 = () => {
+const Page5 = ({ pageNumber,totalPages }) => {
+  const { id } = useParams();
+  const { blogData } = useData();
+  const options = { month: "long", day: "numeric", year: "numeric" };
+  let User = null;
+
+  if (blogData && id) {
+    console.log(id);
+    User = blogData.find((e) => e._id == id);
+    console.log(User);
+  }
+  if (!blogData) {
+    return (
+      <div className=" px-96">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!User) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-3xl font-bold text-center mb-4">User not found</h1>
+      </div>
+    );
+  }
   return (
     <div className="p-8 page">
       {/* Header */}
@@ -38,7 +65,7 @@ const Page5 = () => {
             <tbody>
               <tr className="bg-gray-100">
                 <td className="border px-4 py-2">1</td>
-                <td className="border px-4 py-2">www.samplereport.com</td>
+                <td className="border px-4 py-2">{User.email}</td>
               </tr>
             </tbody>
           </table>
@@ -49,14 +76,14 @@ const Page5 = () => {
       <div>
         <h1 className="text-xl font-bold text-blue-600">3. Methodology</h1>
         <div className="mt-4 flex justify-center">
-          <Image className='h-[350px]' src={MethodologyImage} alt="Web Application Security Testing Methodology" />
+          <Image className='w-[90%] h-[350px]' src={MethodologyImage} alt="Web Application Security Testing Methodology" />
         </div>
       </div>
 
       {/* Footer */}
       <div className="mt-8 text-center">
         <p className="text-sm text-gray-600">Confidential</p>
-        <p className="text-sm text-gray-600">Page 5 of 40</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
       </div>
     </div>
   );

@@ -89,7 +89,7 @@ const Reportable = () => {
     );
 
     try {
-      await axios.delete(`/api/updateReports/${blogId}/${productId}`);
+      await axios.delete(`/api/updateReports/${productId}/${blogId}`);
       toast.success("Report deleted successfully!");
       setTimeout(() => {
         window.location.reload();
@@ -102,7 +102,7 @@ const Reportable = () => {
   const getSeverityBgColor = (status) => {
     switch (status) {
       case "Open":
-        return "bg-[#90EE90]"; /* LightGreen */
+        return "bg-red-500"; 
       case "PendingForReview":
         return "bg-yellow-500"; /* LightYellow */
       case "PendingForApproval":
@@ -319,7 +319,7 @@ const Reportable = () => {
                       </td>
                       <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
                         <Link
-                          href={`/editReports/${product.blogId._id}`}
+                          href={`/editReports/${id}/${product.blogId._id}`}
                           className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                           type="button"
                         >

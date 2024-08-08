@@ -1,9 +1,11 @@
+'use client'
 import React from "react";
 
 import Header from "@/app/components/Header";
 import SideBar from "@/app/components/SideBar";
 import { ToastContainer } from "react-toastify";
-import { EditProject } from "@/app/editprojects/[id]/EditProject";
+
+import {EditReports} from "./EditReports";
 
 
 const page = () => {
@@ -17,7 +19,7 @@ const page = () => {
             <SideBar />
           </div>
           <div className="w-[60%] mt-24 mx-auto">
-          <EditProject/>
+          <EditReports/>
           </div>
         </div>
       </div>

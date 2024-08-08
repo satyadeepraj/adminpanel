@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import React from "react";
 import image from "../../public/loginpage/logo1.png";
@@ -8,6 +8,13 @@ import SideBar from "./SideBar";
 import { useStore } from "@/store";
 import ProfileDropdown from "@/components/dashboardComponents/ProfileDropdown";
 
+import { Register } from "@/components/UserComponent/Register";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 const Header = () => {
   const { user } = useStore();
   return (
@@ -30,15 +37,34 @@ const Header = () => {
       </Sheet>
       <div className="flex gap-2 items-center  ">
         <a className="" href="#" aria-label="Brand">
-          <Image width={100} src={image} alt="User" className="w-[100px] h-28" />
+          <Image
+            width={100}
+            src={image}
+            alt="User"
+            className="w-[100px] h-28"
+          />
         </a>
         {user && (
-          <p className='hidden sm:block'>
-            Welcome, <span className="font-medium ms-2 capitalize">{user.name}</span>
+          <p className="hidden sm:block">
+            Welcome,{" "}
+            <span className="font-medium ms-2 capitalize">{user.name}</span>
           </p>
         )}
       </div>
-      <div className="relative group  ">
+
+      <div className="relative group flex items-center gap-12  ">
+        <div className="">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Register />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Register New Pentester</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <ProfileDropdown user={user} />
       </div>
     </header>

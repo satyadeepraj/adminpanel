@@ -11,6 +11,7 @@ const sectionSchema = new mongoose.Schema({
   images: [{ type: String }],
 });
 
+
 const authorSchema = new mongoose.Schema({
   preparedby: {
     type: String,
@@ -51,7 +52,7 @@ const blogPostSchema = new mongoose.Schema({
   maincontent: {
     type: String,
   },
-  status:{
+  status: {
     type: String,
     enum: ["Open", "PendingForReview", "PendingForApproval", "Closed"],
   },
@@ -63,7 +64,7 @@ const blogPostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
- 
+
   images: [{ type: String }],
   author: [authorSchema],
   sections: [sectionSchema],

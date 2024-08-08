@@ -1,6 +1,6 @@
 // pages/ratings.js
 
-const Page7 = () => {
+const Page7 = ({ pageNumber,totalPages }) => {
     return (
       <div className="p-8 page">
         {/* Ratings Header */}
@@ -51,9 +51,9 @@ const Page7 = () => {
   
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">Confidential</p>
-          <p className="text-sm text-gray-600">Page 7 of 40</p>
-        </div>
+        <p className="text-sm text-gray-600">Confidential</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
+      </div>
       </div>
     );
   };

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { Loader } from "@/components/component/loader";
 
-export default function Page10() {
+export default function Page10({ pageNumber,totalPages }) {
   const { id } = useParams();
   const { blogData, userSeverityCounts } = useData();
 
@@ -80,6 +80,10 @@ export default function Page10() {
           6.2 Overall Severity
         </h1>
         <PieChart data={findingsData} />
+      </div>
+      <div className="mt-8 text-center">
+        <p className="text-sm text-gray-600">Confidential</p>
+        <p className="text-sm text-gray-600">  Page {pageNumber} of {totalPages}</p>
       </div>
     </div>
   );
