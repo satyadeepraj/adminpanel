@@ -34,23 +34,27 @@ export async function PUT(request, { params }) {
   const password = formData.get("password");
 
   const image1 = formData.get("image1");
-  const image2 = formData.get("image2");
-  const image3 = formData.get("image3");
-  const image4 = formData.get("image4");
-  const imageFiles = [image1, image2, image3, image4].filter(Boolean);
+  const existingImage1 = formData.get("existingImage1");
+  const imageFiles = [image1].filter(Boolean);
 
   try {
-    // Upload images to Cloudinary
-    const uploadPromises = imageFiles.map(async (imageFile) => {
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
-      const file64 = parser.format(imageFile.name, buffer);
-      const result = await cloudinary.uploader.upload(file64.content, {
-        resource_type: "auto",
-      });
-      return result.secure_url;
-    });
+    let cloudinaryUrls = [];
 
-    const cloudinaryUrls = await Promise.all(uploadPromises);
+    // Upload new images to Cloudinary if any
+    if (imageFiles.length > 0) {
+      const uploadPromises = imageFiles.map(async (imageFile) => {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        const dataUri = parser.format(imageFile.name, buffer);
+        const result = await cloudinary.v2.uploader.upload(dataUri.content, {
+          folder: "nextauth_products",
+        });
+        return result.secure_url;
+      });
+
+      cloudinaryUrls = await Promise.all(uploadPromises);
+    } else {
+      cloudinaryUrls = [existingImage1];
+    }
 
     const updateData = {
       companyName,

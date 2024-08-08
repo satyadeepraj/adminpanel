@@ -1,5 +1,3 @@
-
-
 import connectToDatabase from "@/lib/db";
 import { Buffer } from "buffer";
 import DatauriParser from "datauri/parser";
@@ -15,11 +13,11 @@ cloudinary.config({
 
 export const dynamic = "force-dynamic";
 
-export async function PUT(request,{ params }) {
+export async function PUT(request, { params }) {
   await connectToDatabase();
   const parser = new DatauriParser();
   const formData = await request.formData();
-  const {blogId} = params;
+  const { blogId } = params;
   const email = formData.get("email");
   const documentype = formData.get("documentype");
   const documentversion = formData.get("documentversion");
@@ -37,7 +35,7 @@ export async function PUT(request,{ params }) {
   const image3 = formData.get("image3");
   const image4 = formData.get("image4");
   const imageFiles = [image1, image2, image3, image4].filter(Boolean);
-
+  const existingImage1 = formData.get("existingImage1");
   const sections = [];
 
   formData.forEach((value, key) => {
@@ -65,27 +63,41 @@ export async function PUT(request,{ params }) {
   });
 
   try {
-    const uploadPromises = imageFiles.map(async (imageFile) => {
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
-      const file64 = parser.format(imageFile.name, buffer);
-      const result = await cloudinary.uploader.upload(file64.content, {
-        resource_type: "auto",
-      });
-      return result.secure_url;
-    });
+    let cloudinaryUrls = [];
 
-    const cloudinaryUrls = await Promise.all(uploadPromises);
+    // Upload new images to Cloudinary if any
+    if (imageFiles.length > 0) {
+      const uploadPromises = imageFiles.map(async (imageFile) => {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        const dataUri = parser.format(imageFile.name, buffer);
+        const result = await cloudinary.v2.uploader.upload(dataUri.content, {
+          folder: "nextauth_products",
+        });
+        return result.secure_url;
+      });
+
+      cloudinaryUrls = await Promise.all(uploadPromises);
+    } else if (existingImage1) {
+      cloudinaryUrls = [existingImage1];
+    }
 
     const sectionUploadPromises = sections.map(
       async (section, sectionIndex) => {
         const sectionImageUploadPromises = section.images.map(
           async (imageFile, imageIndex) => {
-            const buffer = Buffer.from(await imageFile.arrayBuffer());
-            const file64 = parser.format(imageFile.name, buffer);
-            const result = await cloudinary.uploader.upload(file64.content, {
-              resource_type: "auto",
-            });
-            return result.secure_url;
+            if (typeof imageFile === "string") {
+              // If it's an existing image URL, keep it
+              return imageFile;
+            } else {
+              // Upload new image
+              const buffer = Buffer.from(await imageFile.arrayBuffer());
+              const file64 = parser.format(imageFile.name, buffer);
+              const result = await cloudinary.uploader.upload(file64.content, {
+                resource_type: "auto",
+                folder: "nextauth_sections", // optional folder for sections
+              });
+              return result.secure_url;
+            }
           }
         );
 
@@ -95,22 +107,27 @@ export async function PUT(request,{ params }) {
     );
 
     await Promise.all(sectionUploadPromises);
-    console.log(  {
-      email,
-      documentype,
-      documentversion,
-      dateOfReport,
-      maintitle,
-      maincontent,
-      status,
-      datePublished,
-      images: cloudinaryUrls || [],
-      author,
-      sections,
-    },"line no.108api********************************",blogId);
+
+    console.log(
+      {
+        email,
+        documentype,
+        documentversion,
+        dateOfReport,
+        maintitle,
+        maincontent,
+        status,
+        datePublished,
+        images: cloudinaryUrls || [],
+        author,
+        sections,
+      },
+      "line no.108api********************************",
+      blogId
+    );
 
     const updatedBlog = await BlogPost.findOneAndUpdate(
-      {_id:blogId},
+      { _id: blogId },
       {
         email,
         documentype,
@@ -124,9 +141,9 @@ export async function PUT(request,{ params }) {
         author,
         sections,
       },
-      {upsert: true}
+      { upsert: true }
     );
-          console.log(updatedBlog,'********************************line126 api');
+    console.log(updatedBlog, "********************************line126 api");
     return Response.json({
       status: "success",
       data: updatedBlog,
@@ -137,17 +154,20 @@ export async function PUT(request,{ params }) {
   }
 }
 
-export async function DELETE(request,{ params }) {
+export async function DELETE(request, { params }) {
   await connectToDatabase();
-  console.log(params)
+  console.log(params);
   const { searchParams } = new URL(request.url);
   console.log(searchParams);
-  const {blogId} = params
-  const {productId} = params;
- console.log(`Received blogId: ${blogId}, productId: ${productId}`);
+  const { blogId } = params;
+  const { productId } = params;
+  console.log(`Received blogId: ${blogId}, productId: ${productId}`);
   if (!blogId || !productId) {
     return new Response(
-      JSON.stringify({ status: "fail", message: "Missing blogId or productId" }),
+      JSON.stringify({
+        status: "fail",
+        message: "Missing blogId or productId",
+      }),
       { status: 400 }
     );
   }

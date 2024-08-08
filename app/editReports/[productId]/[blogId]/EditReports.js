@@ -154,8 +154,8 @@ export function EditReports() {
 
     if (image1Ref.current.files[0]) {
       formData.append("image1", image1Ref.current.files[0]);
-    } else if (typeof selectedImage1 === "string") {
-      formData.append("image1", selectedImage1); // Use default image URL if not updated
+    } else {
+      formData.append("existingImage1", blog.images[0]);
     }
 
     try {
