@@ -36,7 +36,7 @@ export async function POST(request) {
 
   formData.forEach((value, key) => {
     const sectionMatch = key.match(
-      /^sections\[(\d+)]\[(vulnerability|severity|images)](\[\d+\])?$/
+      /^sections\[(\d+)]\[(vulnerability|severity|status|images)](\[\d+\])?$/
     );
     if (sectionMatch) {
       const index = parseInt(sectionMatch[1]);
@@ -48,6 +48,7 @@ export async function POST(request) {
       sections[index] = sections[index] || {
         vulnerability: "",
         severity: "",
+        status:"Open",
         images: [],
       };
       if (field === "images") {

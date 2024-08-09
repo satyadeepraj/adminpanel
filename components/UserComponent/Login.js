@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { revalidation } from "@/action";
 import Image from "next/image";
+import { Register } from "./Register";
 
 const FormSchema = z.object({
   email: z.string(),
@@ -114,12 +115,7 @@ export function Login() {
         <div className="flex mobile:hidden  flex-col justify-between gap-4">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">Log in</h2>
-            <Link
-              className="text-sm font-medium text-[#0FBC43] 100% dark:hover:text-gray-50"
-              href="/register"
-            >
-              Register
-            </Link>
+         <div className="bg-red-500"><Register/></div>  
           </div>
 
           <Form {...form}>

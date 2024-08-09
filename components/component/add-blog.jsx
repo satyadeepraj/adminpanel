@@ -58,7 +58,7 @@ export function AddBlog() {
   const [status, SetStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [sections, setSections] = useState([
-    { vulnerability: "", severity: "", images: [""] },
+    { vulnerability: "", severity: "", status: "", images: [""] },
   ]);
 
   const vulnerabilities = [
@@ -129,6 +129,8 @@ export function AddBlog() {
         section.vulnerability
       );
       formData.append(`sections[${index}][severity]`, section.severity);
+      formData.append(`sections[${index}][status]`, section.status);
+      console.log(status)
       section.images.forEach((image, imageIndex) => {
         formData.append(`sections[${index}][images][${imageIndex}]`, image);
         console.log(image);
@@ -190,7 +192,7 @@ export function AddBlog() {
   const addSection = () => {
     setSections([
       ...sections,
-      { vulnerability: "", severity: "", images: [""] },
+      { vulnerability: "", severity: "", status: "", images: [""] },
     ]);
   };
 
@@ -423,6 +425,28 @@ export function AddBlog() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <Label htmlFor={`section-status-${index}`}>Status</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        handleSectionChange(index, "status", value)
+                      }
+                      value={section.status}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Severity</SelectLabel>
+                          <SelectItem value="Open" className="bg-[]">
+                            Open
+                          </SelectItem>
+                          <SelectItem value="Close" className="bg-[]">
+                            Close
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <Label htmlFor={`section-severity-${index}`}>
                       Severity
                     </Label>

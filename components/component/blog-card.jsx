@@ -13,7 +13,7 @@ export function BlogCard(props) {
   const getSeverityBgColor = (status) => {
     switch (status) {
       case "Open":
-        return "bg-[#90EE90]"; /* LightGreen */
+        return "bg-red-500"; /* LightGreen */
       case "PendingForReview":
         return "bg-yellow-500"; /* LightYellow */
       case "PendingForApproval":
@@ -25,7 +25,7 @@ export function BlogCard(props) {
     }
   };
   return (
-    <Card className="w-1/4  m-12 max-w-sm">
+    <Card className="w-1/3  m-12 max-w-sm">
       <div className="group relative overflow-hidden rounded-lg shadow-lg transition-all hover:shadow-xl">
         <CardHeader>
           <Link
@@ -36,7 +36,7 @@ export function BlogCard(props) {
           </Link>
           <img
             alt="Blog post image"
-            className="h-40  w-full object-cover transition-all group-hover:scale-110 rounded-2xl"
+            className="h-52  w-full object-cover transition-all group-hover:scale-110 rounded-2xl"
             height={400}
             src={props.image}
             style={{

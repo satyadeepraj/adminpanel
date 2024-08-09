@@ -19,6 +19,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import Link from "next/link";
@@ -102,7 +111,7 @@ const Reportable = () => {
   const getSeverityBgColor = (status) => {
     switch (status) {
       case "Open":
-        return "bg-red-500"; 
+        return "bg-red-500";
       case "PendingForReview":
         return "bg-yellow-500"; /* LightYellow */
       case "PendingForApproval":
@@ -212,7 +221,7 @@ const Reportable = () => {
               </div>
               <div className="flex">
                 <div className="flex items-center space-x-2 mb-4">
-                <Label htmlFor="toggle-view">Card</Label>
+                  <Label htmlFor="toggle-view">Card</Label>
                   <Switch
                     id="toggle-view"
                     checked={isTableView}
@@ -234,170 +243,225 @@ const Reportable = () => {
             </div>
           </div>
           {isTableView ? (
-          <div className="p-6 px-0 overflow-scroll">
-            <table className="w-full mt-4 text-left table-auto min-w-max">
-              <thead>
-                <tr>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Report Id
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Phone Number
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Status
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Employed
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentReports && currentReports.length > 0 ? (
-                  currentReports.map((product) => (
-                    <tr
-                      key={product.blogId._id}
-                      id={product.blogId._id}
-                      className="text-left border-b border-gray-300"
-                    >
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-3">
-                        <img
-                            src={
-                              product.blogId.images?.[0] ||
-                              "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
-                            }
-                            alt="Company Logo"
-                            className="h-9 w-9 rounded-full object-cover"
-                          />
+            <div className="p-6 px-0 overflow-scroll">
+              <table className="w-full mt-4 text-left table-auto min-w-max">
+                <thead>
+                  <tr>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Report Id
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Phone Number
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Status
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Employed
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentReports && currentReports.length > 0 ? (
+                    currentReports.map((product) => (
+                      <tr
+                        key={product.blogId._id}
+                        id={product.blogId._id}
+                        className="text-left border-b border-gray-300"
+                      >
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={
+                                product.blogId.images?.[0] ||
+                                "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
+                              }
+                              alt="Company Logo"
+                              className="h-9 w-9 rounded-full object-cover"
+                            />
+                            <div className="flex flex-col">
+                              <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900"></p>
+                              <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                                {product.blogId.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
                           <div className="flex flex-col">
-                            <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900"></p>
+                            <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                              {product.blogId.phoneNumber}
+                            </p>
                             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                              {product.blogId.email}
+                              WhatsApp
                             </p>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="flex flex-col">
-                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {product.blogId.phoneNumber}
-                          </p>
-                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                            WhatsApp
-                          </p>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="w-max">
-                          <div
-                            className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap  ${getSeverityBgColor(
-                              product.blogId.status
-                            )}`}
-                          >
-                            <span className="">{product.blogId.status}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                          {new Date(
-                            product.blogId.dateOfReport
-                          ).toLocaleDateString("en-GB")}
-                        </p>
-                      </td>
-                      <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
-                        <Link
-                          href={`/editReports/${id}/${product.blogId._id}`}
-                          className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                          type="button"
-                        >
-                          <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              aria-hidden="true"
-                              className="w-4 h-4"
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <div className="w-max">
+                            <div
+                              className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap  ${getSeverityBgColor(
+                                product.blogId.status
+                              )}`}
                             >
-                              <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
-                            </svg>
-                          </span>
-                        </Link>
-                        <Link
-                          classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
-                          href={`/blogdetails/${product.blogId._id}`}
-                          type="button"
-                          className="block"
-                          data-hs-overlay="#hs-ai-invoice-modal"
-                        >
-                          <span className="px-6 py-1.5">
-                            <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
-                              <svg
-                                className="flex-shrink-0 size-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                fill="currentColor"
-                                viewBox="0 0 16 16"
-                              >
-                                <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
-                                <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
-                              </svg>
-                              View
+                              <span className="">{product.blogId.status}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                            {new Date(
+                              product.blogId.dateOfReport
+                            ).toLocaleDateString("en-GB")}
+                          </p>
+                        </td>
+                        <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
+                          <div className="py-4">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <div className="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+                                  <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                      aria-hidden="true"
+                                      className="w-4 h-4"
+                                    >
+                                      <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
+                                    </svg>
+                                  </span>
+                                </div>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Edit Report</DialogTitle>
+                                  <DialogDescription>
+                                    
+                                      
+                                    <Link
+                                      href={`/editReports/${id}/${product.blogId._id}`}
+                                      className=" "
+                                      type="button"
+                                    >
+                                      <div className="flex flex-row gap-2 py-6 justify-center items-center  select-none rounded-lg align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+                                      <span>Edit Report</span>
+                                      <span className=" ">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          viewBox="0 0 24 24"
+                                          fill="currentColor"
+                                          aria-hidden="true"
+                                          className="w-4 h-4"
+                                        >
+                                          <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
+                                        </svg>
+                                      </span>
+                                      </div>
+                                    </Link>
+
+                                    <Link
+                                      href={`/revalidationReports/${id}/${product.blogId._id}`}
+                                      className=" "
+                                      type="button"
+                                    >
+                                      <div className="flex flex-row gap-2 py-6 justify-center items-center  select-none rounded-lg align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+                                      <span>Revalidation Report</span>
+                                      <span className=" ">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          viewBox="0 0 24 24"
+                                          fill="currentColor"
+                                          aria-hidden="true"
+                                          className="w-4 h-4"
+                                        >
+                                          <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
+                                        </svg>
+                                      </span>
+                                      </div>
+                                    </Link>
+                                    
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter></DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+
+                          <Link
+                            classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
+                            href={`/blogdetails/${product.blogId._id}`}
+                            type="button"
+                            className="block"
+                            data-hs-overlay="#hs-ai-invoice-modal"
+                          >
+                            <span className="px-6 py-1.5">
+                              <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
+                                <svg
+                                  className="flex-shrink-0 size-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
+                                  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+                                </svg>
+                                View
+                              </span>
                             </span>
-                          </span>
-                        </Link>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <button>
-                              <Image
-                                src={DeleteIcon}
-                                width={30}
-                                height={20}
-                                className="ml-2"
-                              ></Image>
-                            </button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your Product and remove data
-                                from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() =>
-                                  handleDeleteProduct(
-                                    product._id,
-                                    product.blogId._id
-                                  )
-                                }
-                              >
-                                Continue
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </td>
-                      {/* <td className="size-px whitespace-nowrap">
+                          </Link>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <button>
+                                <Image
+                                  src={DeleteIcon}
+                                  width={30}
+                                  height={20}
+                                  className="ml-2"
+                                ></Image>
+                              </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you absolutely sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete your Product and remove
+                                  data from our servers.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() =>
+                                    handleDeleteProduct(
+                                      product._id,
+                                      product.blogId._id
+                                    )
+                                  }
+                                >
+                                  Continue
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </td>
+                        {/* <td className="size-px whitespace-nowrap">
                   <button type="button" className="block" data-hs-overlay="#hs-ai-invoice-modal">
                     <span className="px-6 py-1.5">
                       <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
@@ -410,33 +474,35 @@ const Reportable = () => {
                     </span>
                   </button>
                 </td> */}
-                    </tr>
-                  ))
-                ) : (
-                  <div>No Reports available. Please add some.</div>
-                )}
-              </tbody>
-            </table>
-          </div>):(
-          <div className="flex flex-row">
-            {currentReports.map((e) => {
-              const formattedDateOfReport = new Intl.DateTimeFormat(
-                "en-US",
-                options
-              ).format(new Date(e.blogId.dateOfReport));
-              return (
-                <BlogCard
-                  key={e.blogId._id}
-                  id={e.blogId._id}
-                  maintitle={e.blogId.maintitle}
-                  status={e.blogId.status}
-                  dateOfReport={formattedDateOfReport}
-                  author={e.blogId.author}
-                  image={e.blogId.images[0]}
-                />
-              );
-            })}
-          </div>)}
+                      </tr>
+                    ))
+                  ) : (
+                    <div>No Reports available. Please add some.</div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="flex flex-row items-center justify-center flex-wrap">
+              {currentReports.map((e) => {
+                const formattedDateOfReport = new Intl.DateTimeFormat(
+                  "en-US",
+                  options
+                ).format(new Date(e.blogId.dateOfReport));
+                return (
+                  <BlogCard
+                    key={e.blogId._id}
+                    id={e.blogId._id}
+                    maintitle={e.blogId.maintitle}
+                    status={e.blogId.status}
+                    dateOfReport={formattedDateOfReport}
+                    author={e.blogId.author}
+                    image={e.blogId.images[0]}
+                  />
+                );
+              })}
+            </div>
+          )}
           <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
               Page {currentPage} of {totalPages}

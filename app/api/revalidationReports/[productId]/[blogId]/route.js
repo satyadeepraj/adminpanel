@@ -26,7 +26,6 @@ export async function PUT(request, { params }) {
   const maincontent = formData.get("maincontent");
   const datePublished = new Date(formData.get("datePublished"));
   const status = formData.get("status");
-  const productId = formData.get("productId");
 
   const author = JSON.parse(formData.get("author"));
 
@@ -52,7 +51,7 @@ export async function PUT(request, { params }) {
       sections[index] = sections[index] || {
         vulnerability: "",
         severity: "",
-        status:"Open",
+        status: "Open",
         images: [],
       };
       if (field === "images") {
@@ -127,27 +126,31 @@ export async function PUT(request, { params }) {
       blogId
     );
 
-    const updatedBlog = await BlogPost.findOneAndUpdate(
-      { _id: blogId },
-      {
-        email,
-        documentype,
-        documentversion,
-        dateOfReport,
-        status,
-        maintitle,
-        maincontent,
-        datePublished,
-        images: cloudinaryUrls || [],
-        author,
-        sections,
-      },
-      { upsert: true }
+    const newBlog = await BlogPost.create({
+      email,
+      documentype,
+      documentversion,
+      dateOfReport,
+      status,
+      maintitle,
+      maincontent,
+      datePublished,
+      images: cloudinaryUrls || [],
+      author,
+      sections,
+      previousVersionId: blogId,
+    });
+
+    // Find the associated product and update the reports
+    const product = await Product.findOneAndUpdate(
+      { reports: { $elemMatch: { blogId: blogId } } },
+      { $push: { reports: { blogId: newBlog._id.toString() } } },
+      { new: true }
     );
-    console.log(updatedBlog, "********************************line126 api");
+
     return Response.json({
       status: "success",
-      data: updatedBlog,
+      data: newBlog,product,
     });
   } catch (error) {
     console.error(error);

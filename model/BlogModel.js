@@ -8,6 +8,10 @@ const sectionSchema = new mongoose.Schema({
     type: String,
     enum: ["Critical", "High", "Medium", "Low"],
   },
+  status:{
+    type: String,
+    enum: ["Open", "Close"],
+  },
   images: [{ type: String }],
 });
 
@@ -68,6 +72,11 @@ const blogPostSchema = new mongoose.Schema({
   images: [{ type: String }],
   author: [authorSchema],
   sections: [sectionSchema],
+  previousVersionId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "BlogPost",
+    default: null,
+  }, 
 });
 
 const BlogPost =

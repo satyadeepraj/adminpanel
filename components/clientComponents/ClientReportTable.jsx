@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useData } from "@/context/DataContext";
 import DeleteIcon from "../../public/DeleteIcon.gif";
 import { useParams, useRouter } from "next/navigation";
@@ -103,7 +102,7 @@ const ClientReportTable = () => {
   const getSeverityBgColor = (status) => {
     switch (status) {
       case "Open":
-        return "bg-[#90EE90]"; /* LightGreen */
+        return "bg-red-500"; /* LightGreen */
       case "PendingForReview":
         return "bg-yellow-500"; /* LightYellow */
       case "PendingForApproval":
@@ -118,7 +117,6 @@ const ClientReportTable = () => {
     <div className="bg-blue-400">
       <ClientHeader className="" />
       <div className="">
-       
         <div className="p-7 w-[100%] mobile:w-[100%]   flex flex-col  text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
           <div className=" mx-4 mt-4 overflow-hidden text-gray-700 bg-white rounded-none bg-clip-border">
             <div className="flex items-center justify-between gap-8 mb-8">
@@ -168,7 +166,6 @@ const ClientReportTable = () => {
                 >
                   view all
                 </button>
-                
               </div>
             </div>
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -211,7 +208,7 @@ const ClientReportTable = () => {
               </div>
               <div className="flex">
                 <div className="flex items-center space-x-2 mb-4">
-                <Label htmlFor="toggle-view">Card</Label>
+                  <Label htmlFor="toggle-view">Card</Label>
                   <Switch
                     id="toggle-view"
                     checked={isTableView}
@@ -233,118 +230,116 @@ const ClientReportTable = () => {
             </div>
           </div>
           {isTableView ? (
-          <div className="p-6 px-0 overflow-scroll">
-            <table className="w-full mt-4 text-left table-auto min-w-max">
-              <thead>
-                <tr>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Report Id
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Phone Number
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Status
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                      Employed
-                    </p>
-                  </th>
-                  <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentReports && currentReports.length > 0 ? (
-                  currentReports.map((product) => (
-                    <tr
-                      key={product.blogId._id}
-                      id={product.blogId._id}
-                      className="text-left border-b border-gray-300"
-                    >
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-3">
-                        <img
-                            src={
-                              product.blogId.images?.[0] ||
-                              "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
-                            }
-                            alt="Company Logo"
-                            className="h-9 w-9 rounded-full object-cover"
-                          />
+            <div className="p-6 px-0 overflow-scroll">
+              <table className="w-full mt-4 text-left table-auto min-w-max">
+                <thead>
+                  <tr>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Report Id
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Phone Number
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Status
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                        Employed
+                      </p>
+                    </th>
+                    <th className="p-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentReports && currentReports.length > 0 ? (
+                    currentReports.map((product) => (
+                      <tr
+                        key={product.blogId._id}
+                        id={product.blogId._id}
+                        className="text-left border-b border-gray-300"
+                      >
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={
+                                product.blogId.images?.[0] ||
+                                "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
+                              }
+                              alt="Company Logo"
+                              className="h-9 w-9 rounded-full object-cover"
+                            />
+                            <div className="flex flex-col">
+                              <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900"></p>
+                              <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                                {product.blogId.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
                           <div className="flex flex-col">
-                            <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900"></p>
+                            <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                              {product.blogId.phoneNumber}
+                            </p>
                             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                              {product.blogId.email}
+                              WhatsApp
                             </p>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="flex flex-col">
-                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                            {product.blogId.phoneNumber}
-                          </p>
-                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                            WhatsApp
-                          </p>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <div className="w-max">
-                          <div
-                            className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap  ${getSeverityBgColor(
-                              product.blogId.status
-                            )}`}
-                          >
-                            <span className="">{product.blogId.status}</span>
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <div className="w-max">
+                            <div
+                              className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-white uppercase rounded-md select-none whitespace-nowrap  ${getSeverityBgColor(
+                                product.blogId.status
+                              )}`}
+                            >
+                              <span className="">{product.blogId.status}</span>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4 border-b border-blue-gray-50">
-                        <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                          {new Date(
-                            product.blogId.dateOfReport
-                          ).toLocaleDateString("en-GB")}
-                        </p>
-                      </td>
-                      <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
-                      
-                        <Link
-                          classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
-                          href={`/client-report-details/${product.blogId._id}`}
-                          type="button"
-                          className="block"
-                          data-hs-overlay="#hs-ai-invoice-modal"
-                        >
-                          <span className="px-6 py-1.5">
-                            <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
-                              <svg
-                                className="flex-shrink-0 size-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                fill="currentColor"
-                                viewBox="0 0 16 16"
-                              >
-                                <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
-                                <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
-                              </svg>
-                              View
+                        </td>
+                        <td className="p-4 border-b border-blue-gray-50">
+                          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                            {new Date(
+                              product.blogId.dateOfReport
+                            ).toLocaleDateString("en-GB")}
+                          </p>
+                        </td>
+                        <td className="p-4 flex flex-row items-center border-b border-blue-gray-50">
+                          <Link
+                            classNameName="ml-1 text-gray-500 cursor-pointer hover:bg-gray-300 p-1 rounded"
+                            href={`/client-report-details/${product.blogId._id}`}
+                            type="button"
+                            className="block"
+                            data-hs-overlay="#hs-ai-invoice-modal"
+                          >
+                            <span className="px-6 py-1.5">
+                              <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
+                                <svg
+                                  className="flex-shrink-0 size-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
+                                  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+                                </svg>
+                                View
+                              </span>
                             </span>
-                          </span>
-                        </Link>
-                       
-                      </td>
-                      {/* <td className="size-px whitespace-nowrap">
+                          </Link>
+                        </td>
+                        {/* <td className="size-px whitespace-nowrap">
                   <button type="button" className="block" data-hs-overlay="#hs-ai-invoice-modal">
                     <span className="px-6 py-1.5">
                       <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800">
@@ -357,33 +352,35 @@ const ClientReportTable = () => {
                     </span>
                   </button>
                 </td> */}
-                    </tr>
-                  ))
-                ) : (
-                  <div>No Reports available. Please add some.</div>
-                )}
-              </tbody>
-            </table>
-          </div>):(
-          <div className="flex flex-row">
-            {currentReports.map((e) => {
-              const formattedDateOfReport = new Intl.DateTimeFormat(
-                "en-US",
-                options
-              ).format(new Date(e.blogId.dateOfReport));
-              return (
-                <BlogCard
-                  key={e.blogId._id}
-                  id={e.blogId._id}
-                  maintitle={e.blogId.maintitle}
-                  status={e.blogId.status}
-                  dateOfReport={formattedDateOfReport}
-                  author={e.blogId.author}
-                  image={e.blogId.images[0]}
-                />
-              );
-            })}
-          </div>)}
+                      </tr>
+                    ))
+                  ) : (
+                    <div>No Reports available. Please add some.</div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="flex flex-row flex-wrap">
+              {currentReports.map((e) => {
+                const formattedDateOfReport = new Intl.DateTimeFormat(
+                  "en-US",
+                  options
+                ).format(new Date(e.blogId.dateOfReport));
+                return (
+                  <BlogCard
+                    key={e.blogId._id}
+                    id={e.blogId._id}
+                    maintitle={e.blogId.maintitle}
+                    status={e.blogId.status}
+                    dateOfReport={formattedDateOfReport}
+                    author={e.blogId.author}
+                    image={e.blogId.images[0]}
+                  />
+                );
+              })}
+            </div>
+          )}
           <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
             <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
               Page {currentPage} of {totalPages}
